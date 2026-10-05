@@ -3,18 +3,20 @@ import { config } from 'dotenv';
 config();
 
 export const env = {
-    nodeEnv: process.env.NODE_ENV ?? 'development',
-    host: process.env.HOST ?? '0.0.0.0',
-    port: Number(process.env.PORT ?? 3000),
-    databaseUrl: process.env.DATABASE_URL ?? '',
-    jwtSecret: process.env.JWT_SECRET ?? ''
+    NODE_ENV: process.env.NODE_ENV ?? 'development',
+    HOST: process.env.HOST ?? '0.0.0.0',
+    PORT: Number(process.env.PORT ?? 3000),
+    DATABASE_URL: process.env.DATABASE_URL ?? '',
+    JWT_SECRET: process.env.JWT_SECRET ?? ''
 };
 
 export const validateEnv = () => {
-    if (!env.databaseUrl) {
+    if (!env.DATABASE_URL) {
         throw new Error('DATABASE_URL is required');
     }
-    if (!env.jwtSecret) {
+    if (!env.JWT_SECRET) {
         throw new Error('JWT_SECRET is required');
     }
 };
+
+validateEnv();

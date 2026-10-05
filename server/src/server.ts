@@ -7,7 +7,7 @@ const app = fastify({ logger: true });
 
 const start = async () => {
     try {
-        await app.listen({ port: env.port, host: env.host });
+        await app.listen({ port: env.PORT, host: env.HOST });
         const address = app.server.address() as { address: string; port: number; };
         app.log.info(`Server running at http://${address.address}:${address.port}`);
     } catch (error) {
