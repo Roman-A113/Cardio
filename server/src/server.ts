@@ -6,6 +6,10 @@ import { env, validateEnv } from './config/env.js';
 
 const app = fastify({ logger: true });
 
+app.get('/', async () => {
+    return "Hello, World!";
+});
+
 const start = async () => {
     try {
         validateEnv();
