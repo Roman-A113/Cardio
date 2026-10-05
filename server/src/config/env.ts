@@ -18,5 +18,3 @@ export const validateEnv = () => {
         throw new Error('JWT_SECRET is required');
     }
 };
-
-validateEnv();
