@@ -1,19 +1,13 @@
 {
-    "compilerOptions": {
-        "target": "es2025",
-        "module": "NodeNext",
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "outDir": "./dist",
-        "rootDir": "./src"
-    },
-    "include": [
-        "src/**/*",
-        "src/config"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+  "compilerOptions": {
+    "target": "es2025",
+    "module": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*", "src/config"],
+  "exclude": ["node_modules", "dist"]
 }
