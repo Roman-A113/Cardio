@@ -55,15 +55,15 @@ Backend — Node.js + Fastify + TypeScript, frontend — React (Vite), БД — 
 
 ## Скрипты
 
-| Где     | Команда                        | Что делает                          |
-|---------|--------------------------------|-------------------------------------|
-| корень  | `npm run format`               | Prettier по всему проекту           |
-| server  | `npm run dev` / `npm start`    | dev-режим (tsx watch) / прод-запуск |
-| server  | `npm run build`                | сборка (typecheck, strict)          |
-| server  | `npx prisma migrate dev --name <имя>` | миграция + перегенерация клиента |
-| client  | `npm run dev`                  | Vite-dev-сервер                     |
-| client  | `npm run lint`                 | ESLint                              |
-| client  | `npm run build`                | `tsc -b && vite build`              |
+| Где    | Команда                               | Что делает                          |
+| ------ | ------------------------------------- | ----------------------------------- |
+| корень | `npm run format`                      | Prettier по всему проекту           |
+| server | `npm run dev` / `npm start`           | dev-режим (tsx watch) / прод-запуск |
+| server | `npm run build`                       | сборка (typecheck, strict)          |
+| server | `npx prisma migrate dev --name <имя>` | миграция + перегенерация клиента    |
+| client | `npm run dev`                         | Vite-dev-сервер                     |
+| client | `npm run lint`                        | ESLint                              |
+| client | `npm run build`                       | `tsc -b && vite build`              |
 
 ## Проверка перед сдачей
 
