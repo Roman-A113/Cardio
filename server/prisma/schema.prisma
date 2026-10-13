@@ -13,3 +13,214 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  PATIENT
+  ADMIN
+  DOCTOR
+}
+
+enum AppointmentType {
+  OMS
+  PAID
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum AppointmentSource {
+  SITE
+  PHONE
+}
+
+enum ContentCategory {
+  LEGAL
+  ABOUT
+  ANNIVERSARY
+  NEWS
+}
+
+model User {
+  id String @id @default(cuid())
+  email String? @unique
+  phone String? @unique
+  passwordHash String
+  role Role @default(PATIENT)
+  firstName String
+  middleName String
+  lastName String
+  birthDate DateTime?
+  omsPolicy String?
+  snils String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointments Appointment[]
+  reviews Review[]
+}
+
+model Specialty {
+  id String @id @default(cuid())
+  name String @unique
+  alias String @unique
+  description String?
+  createdAt DateTime @default(now())
+
+  doctors Doctor[]
+  services MedicalService[]
+}
+
+model Doctor {
+  id String @id @default(cuid())
+  firstName String
+  middleName String
+  lastName String
+  position String
+  category String
+  degree String?
+  about String?
+  photoUrl String?
+  experienceYears Int?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  specialtyId String
+  specialty Specialty @relation(fields: [specialtyId], references: [id])
+
+  educations DoctorEducation[]
+  accreditations DoctorAccreditation[]
+  schedules DoctorSchedule[]
+  services MedicalService[]
+  appointments Appointment[]
+}
+
+model DoctorEducation {
+  id String @id @default(cuid())
+  level String
+  institution String
+  year Int
+  specialty String
+  qualification String?
+
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+model DoctorAccreditation {
+  id String @id @default(cuid())
+  specialty String
+  documentNumber String?
+  validUntil DateTime?
+
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+model DoctorSchedule {
+  id String @id @default(cuid())
+  weekday Int
+  startTime String
+  endTime String
+
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+model MedicalService {
+  id String @id @default(cuid())
+  name String
+  description String?
+  price Decimal @db.Decimal(10, 2)
+  code String?
+  isPaid Boolean @default(true)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  specialtyId String?
+  specialty Specialty? @relation(fields: [specialtyId], references: [id])
+
+  doctors Doctor[]
+  appointments Appointment[]
+}
+
+model Appointment {
+  id String @id @default(cuid())
+  scheduledAt DateTime
+  durationMinutes Int @default(15)
+  type AppointmentType @default(OMS)
+  status AppointmentStatus @default(PENDING)
+  source AppointmentSource @default(SITE)
+  comment String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  serviceId String?
+  service MedicalService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@unique([doctorId, scheduledAt])
+  @@index([userId])
+  @@index([scheduledAt])
+}
+
+model ContentPage {
+  id String @id @default(cuid())
+  alias String @unique
+  title String
+  body String
+  category ContentCategory @default(LEGAL)
+  isPublished Boolean @default(false)
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model Review {
+  id String @id @default(cuid())
+  authorName String
+  text String
+  rating Int?
+  isPublished Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  userId String?
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([isPublished])
+}
+
+model OrganizationInfo {
+  id Int @id @default(1)
+  fullNmae String
+  shortName String?
+  address String
+  postalAddress String?
+  phone String
+  fax                String?
+  email              String
+  website            String?
+  ogrn               String?
+  inn                String?
+  kpp                String?
+  founder            String?
+  structure          String?
+  workSchedule       String?
+  receptionSchedule  String?
+  licenseNumber      String?
+  licenseDate        DateTime?
+  licenseRegistryUrl String?
+  updatedAt          DateTime  @updatedAt
+}
