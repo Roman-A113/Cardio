@@ -1,35 +1,76 @@
-## Установка зависимостей (server)
+# Уральский институт кардиологии — веб-платформа
 
-1. Перейдите в директорию сервера:
+Клиентский сервис (запись на приём, врачи, программы лечения — по ТЗ) и имидж (юбилейная страница 2026).
+Backend — Node.js + Fastify + TypeScript, frontend — React (Vite), БД — PostgreSQL + Prisma, инфраструктура — Docker.
 
-```bash
-cd server
-```
+## Структура
 
-2. Установите пакеты:
+- `server/` — API (Fastify + Prisma), http://localhost:3000
+- `client/` — фронтенд (React + Vite), http://localhost:5173
+- `docker-compose.yml` — PostgreSQL 16 (наружу на `localhost:5433`)
 
-```bash
-npm install
-```
+Это не монорепо: `server/` и `client/` — независимые npm-пакеты. Корневой `package.json` только для Prettier.
 
-## Запуск сервера
+## Требования
 
-### В режиме разработки:
+- Node.js 20+
+- Docker
 
-```bash
-npm run dev
-```
+## Быстрый старт
 
-### Запуск приложения:
+1. Установи зависимости в трёх местах:
 
-**Сборка (если требуется):**
+   ```bash
+   npm install
+   cd server && npm install && cd ..
+   cd client && npm install && cd ..
+   ```
 
-```bash
-npm run build
-```
+2. Создай `.env` из шаблонов:
 
-**Сам запуск:**
+   ```bash
+   cp .env.example .env                  # настройки Docker/БД
+   cp server/.env.example server/.env    # настройки приложения
+   ```
 
-```bash
-npm start
-```
+   В `server/.env` подставь свой `JWT_SECRET`:
+
+   ```bash
+   openssl rand -hex 32
+   ```
+
+3. Подними БД и накати миграцию:
+
+   ```bash
+   docker compose up -d
+   cd server && npx prisma migrate dev && cd ..
+   ```
+
+4. Запусти сервер и клиент в двух терминалах:
+
+   ```bash
+   cd server && npm run dev   # http://localhost:3000
+   cd client && npm run dev   # http://localhost:5173
+   ```
+
+## Скрипты
+
+| Где     | Команда                        | Что делает                          |
+|---------|--------------------------------|-------------------------------------|
+| корень  | `npm run format`               | Prettier по всему проекту           |
+| server  | `npm run dev` / `npm start`    | dev-режим (tsx watch) / прод-запуск |
+| server  | `npm run build`                | сборка (typecheck, strict)          |
+| server  | `npx prisma migrate dev --name <имя>` | миграция + перегенерация клиента |
+| client  | `npm run dev`                  | Vite-dev-сервер                     |
+| client  | `npm run lint`                 | ESLint                              |
+| client  | `npm run build`                | `tsc -b && vite build`              |
+
+## Проверка перед сдачей
+
+- `client/`: `npm run lint && npm run build`
+- `server/`: `npm run build`
+
+## Секреты
+
+Все `.env` намеренно в `.gitignore` — не коммитить. Секреты подставляются из `.env`:
+корневой — для `docker-compose.yml` (интерполяция `${...}`), `server/.env` — для приложения (`dotenv`).
