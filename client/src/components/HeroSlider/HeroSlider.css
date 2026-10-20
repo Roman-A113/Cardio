@@ -1,0 +1,20 @@
+.hero-slider {
+  width: 100%;
+  height: 500px;
+}
+
+.my-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:root {
+  --swiper-theme-color: #d32f2f !important;
+  --swiper-navigation-size: 40px;
+}
