@@ -10,7 +10,6 @@ const App: React.FC = () => {
       <Header />
       <main>
         <HeroSlider />
-        {/* Здесь можно добавить секции новостей, услуг и т.д. */}
       </main>
       <Footer />
     </div>

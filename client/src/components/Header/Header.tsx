@@ -16,7 +16,6 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header-top">
         <div className="logo-section">
-          {/* Заглушка для логотипа, замените src на реальный путь */}
           <img
             src="/logo.png"
             alt="Уральский институт кардиологии"

@@ -1,8 +1,7 @@
-/* src/index.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --color-primary: #d32f2f; /* Фирменный красный цвет */
+  --color-primary: #d32f2f;
   --color-primary-hover: #b71c1c;
   --color-text: #333333;
   --color-bg-light: #f9f9f9;

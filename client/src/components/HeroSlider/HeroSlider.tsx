@@ -1,5 +1,4 @@
 import React from "react";
-// Импортируем стили Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -23,8 +22,8 @@ const HeroSlider: React.FC = () => {
         navigation
         pagination={{ clickable: true }}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
-        loop={true} // Бесконечная прокрутка
-        speed={800} // Скорость перехода в мс
+        loop={true}
+        speed={800}
         className="my-swiper"
       >
         {slides.map((src, index) => (
