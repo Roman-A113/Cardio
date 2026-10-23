@@ -1,6 +1,9 @@
 .hero-slider {
+  --swiper-theme-color: #ffffff;
+  --swiper-navigation-size: 60px;
   width: 100%;
   height: 500px;
+  
 }
 
 .my-swiper {
@@ -14,7 +17,3 @@
   object-fit: cover;
 }
 
-:root {
-  --swiper-theme-color: #d32f2f !important;
-  --swiper-navigation-size: 40px;
-}
