@@ -4,12 +4,14 @@ import HeroSlider from "./components/HeroSlider/HeroSlider.tsx";
 import News from "./components/News/News.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import "./App.css";
+import MainNav from "./components/MainNav/MainNav.tsx";
 
 const App: React.FC = () => {
   return (
     <div className="app-container">
       <Header />
-      <main> 
+      <MainNav />
+      <main>
         <HeroSlider />
         <News />
       </main>

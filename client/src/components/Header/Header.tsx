@@ -2,16 +2,6 @@ import React from "react";
 import "./Header.css";
 
 const Header: React.FC = () => {
-  const menuItems = [
-    "Об институте",
-    "Пациентам",
-    "Платные услуги",
-    "Пресс-центр",
-    "Клиника",
-    "Контакты",
-    "Юбилей",
-  ];
-
   return (
     <header className="header">
       <div className="header-top">
@@ -21,13 +11,6 @@ const Header: React.FC = () => {
             alt="Уральский институт кардиологии"
             className="logo"
           />
-          <span className="logo-text">
-            Уральский
-            <br />
-            институт
-            <br />
-            кардиологии
-          </span>
         </div>
 
         <div className="header-actions">
@@ -59,16 +42,6 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <nav className="main-nav">
-        <ul>
-          {menuItems.map((item) => (
-            <li key={item}>
-              <a href="#">{item}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </header>
   );
 };
