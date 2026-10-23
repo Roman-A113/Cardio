@@ -1,23 +1,23 @@
 import React from "react";
+import { menuData } from "../../data/MenuData";
 import "./MainNav.css";
 
 const MainNav: React.FC = () => {
-  const menuItems = [
-    "Об институте",
-    "Пациентам",
-    "Платные услуги",
-    "Пресс-центр",
-    "Клиника",
-    "Контакты",
-    "Юбилей",
-  ];
-
   return (
     <nav className="main-nav">
       <ul>
-        {menuItems.map((item) => (
-          <li key={item}>
-            <a href="#">{item}</a>
+        {menuData.map((menuItem) => (
+          <li key={menuItem.title} className="nav-item">
+            <a href="#">{menuItem.title}</a>
+            {menuItem.links.length > 0 && (
+              <ul className="dropdown">
+                {menuItem.links.map((link, index) => (
+                  <li key={index}>
+                    <a href="#">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
