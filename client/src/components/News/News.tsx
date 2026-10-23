@@ -31,12 +31,17 @@ const News: React.FC = () => {
         <div className="news-grid">
           {newsList.map((news) => (
             <article key={news.id} className="news-card">
-              <span className="news-date">{news.date}</span>
-              <h3 className="news-title">{news.title}</h3>
-              <p className="news-text">{news.text}</p>
-              <a href="#" className="news-link">
-                Читать далее →
-              </a>
+              <div className="news-card-header">
+                <h3 className="news-title">{news.title}</h3>
+              </div>
+
+              <div className="news-card-body">
+                <span className="news-date">{news.date}</span>
+                <p className="news-text">{news.text}</p>
+                <a href="#" className="news-link">
+                  Читать далее →
+                </a>
+              </div>
             </article>
           ))}
         </div>
