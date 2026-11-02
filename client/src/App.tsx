@@ -1,10 +1,11 @@
 import React from "react";
 import Header from "./components/Header/Header.tsx";
-import HeroSlider from "./components/HeroSlider/HeroSlider.tsx";
 import News from "./components/News/News.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import "./App.css";
 import MainNav from "./components/MainNav/MainNav.tsx";
+import HeroSection from "./components/HeroSection/HeroSection.tsx";
+import "./styles/variables.css";
 
 const App: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ const App: React.FC = () => {
       <Header />
       <MainNav />
       <main>
-        <HeroSlider />
+        <HeroSection />
         <News />
       </main>
       <Footer />

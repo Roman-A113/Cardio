@@ -9,12 +9,13 @@
   align-items: center;
   padding: 15px 40px;
   background-color: #fdfdfd;
+  gap: 30px;
 }
 
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 15px;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -22,15 +23,73 @@
   width: auto;
 }
 
+.search-section {
+  flex-grow: 1;
+  max-width: 600px;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  background-color: #f1f3f5;
+  border-radius: 30px;
+  padding: 5px 15px 5px 20px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.search-form:focus-within {
+  background-color: #fff;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 4px rgba(77, 208, 255, 0.15);
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 15px;
+  color: #333;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.search-btn:hover {
+  background-color: #e2e6ea;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-shrink: 0;
+}
+
+.contacts-block {
+  text-align: right;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
 }
 
 .icons-group {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .icon-btn {
@@ -56,31 +115,24 @@
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s;
+  white-space: nowrap;
 }
 
 .btn-outline {
-  border: 1px solid #d32f2f;
   color: white;
-  background-color: #ffc400;
+  background-color: var(--color-blue);
 }
 
 .btn-outline:hover {
-  background-color: #e0ac00;
+  background-color: var(--color-blue-hover);
   color: white;
 }
 
 .btn-primary {
-  background-color: #d32f2f;
+  background-color: var(--color-coral);
   color: white;
-  border: 1px solid #d32f2f;
 }
 
 .btn-primary:hover {
-  background-color: #b71c1c;
-}
-
-.contacts-block {
-  text-align: right;
-  font-size: 14px;
-  color: #333;
+  background-color: var(--color-coral-hover);
 }
