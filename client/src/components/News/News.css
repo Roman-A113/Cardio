@@ -23,9 +23,10 @@
 }
 
 .news-card {
-  background: #ffffff;
+  background: var(--color-light-grey);
   border-radius: 16px;
-  border: 1px solid #222;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -37,10 +38,9 @@
 
 .news-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); 
   background-color: var(--color-beige);
 }
-
 .news-card-header {
   background-color: transparent;
   padding: 20px 24px 0px 24px;

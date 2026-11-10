@@ -11,8 +11,6 @@ const PopularServices: React.FC = () => {
 
   return (
     <div className="popular-categories">
-      <h3 className="categories-title">Популярные услуги</h3>
-
       <div className="categories-grid">
         {services.map((service, index) => (
           <a href="#" key={index} className="category-card">

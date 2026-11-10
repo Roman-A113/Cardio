@@ -1,5 +1,5 @@
 .main-nav {
-  background-color: #f5f5f5;
+  background-color: var(--color-light-grey);
   padding: 0 40px;
   position: relative;
   z-index: 100;
