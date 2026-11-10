@@ -11,7 +11,7 @@
   padding: 0;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 0px;
 }
 
 .nav-item {
@@ -20,9 +20,10 @@
 
 .main-nav > ul > li > a {
   display: block;
-  padding: 15px 0;
+  padding: 20px 20px;
   text-decoration: none;
   color: #333;
+  font-size: 17px;
   font-weight: 500;
   border-bottom: 2px solid transparent;
   transition:
@@ -64,10 +65,10 @@
 
 .dropdown li a {
   display: block;
-  padding: 10px 20px;
+  padding: 12px 20px;
   text-decoration: none;
   color: #333;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   transition:
     background-color 0.2s,

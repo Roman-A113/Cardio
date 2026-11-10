@@ -4,12 +4,26 @@
 }
 
 .header-top {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr minmax(400px, 600px) 1fr;
   align-items: center;
   padding: 15px 40px;
   background-color: #fdfdfd;
-  gap: 30px;
+  gap: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-self: start;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-self: end;
 }
 
 .logo-section {
@@ -19,13 +33,12 @@
 }
 
 .logo {
-  height: 60px;
+  height: 70px;
   width: auto;
 }
 
 .search-section {
-  flex-grow: 1;
-  max-width: 600px;
+  width: 100%;
 }
 
 .search-form {
@@ -73,13 +86,6 @@
   background-color: #e2e6ea;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-shrink: 0;
-}
-
 .contacts-block {
   text-align: right;
   font-size: 13px;
@@ -87,21 +93,22 @@
   line-height: 1.4;
 }
 
-.icons-group {
-  display: flex;
-  gap: 10px;
-}
-
-.icon-btn {
+.accessibility-btn {
   background: none;
   border: none;
   font-size: 20px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+  color: #333;
 }
 
-.icon-btn img {
+.accessibility-icon {
   display: block;
-  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .auth-buttons {
@@ -111,7 +118,7 @@
 
 .btn {
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 15px;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s;
@@ -135,4 +142,27 @@
 
 .btn-primary:hover {
   background-color: var(--color-coral-hover);
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.map-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #4fc3f7;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.map-link:hover {
+  color: #29b6f6;
+  text-decoration: underline;
 }
