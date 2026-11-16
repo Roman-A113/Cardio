@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { menuData } from "../../data/MenuData";
+import SpecialistsModal from "../Specialists/SpecialistsModal";
 import "./MainNav.css";
 
 const MainNav: React.FC = () => {
+  const [isSpecialistsOpen, setIsSpecialistsOpen] = useState(false);
+
   return (
     <nav className="main-nav">
       <ul>
@@ -13,7 +16,17 @@ const MainNav: React.FC = () => {
               <ul className="dropdown">
                 {menuItem.links.map((link, index) => (
                   <li key={index}>
-                    <a href="#">{link}</a>
+                    {link === "Специалисты" ? (
+                      <button
+                        className="dropdown__specialists-button"
+                        type="button"
+                        onClick={() => setIsSpecialistsOpen(true)}
+                      >
+                        {link}
+                      </button>
+                    ) : (
+                      <a href="#">{link}</a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -21,6 +34,9 @@ const MainNav: React.FC = () => {
           </li>
         ))}
       </ul>
+      {isSpecialistsOpen && (
+        <SpecialistsModal onClose={() => setIsSpecialistsOpen(false)} />
+      )}
     </nav>
   );
 };
