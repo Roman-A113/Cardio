@@ -7,9 +7,50 @@ interface SpecialistsModalProps {
 }
 
 const getFullName = (specialist: Specialist) =>
-  `${specialist.lastName} ${specialist.firstName} ${specialist.middleName}`;
+  [specialist.lastName, specialist.firstName, specialist.middleName]
+    .filter(Boolean)
+    .join(" ");
 
 const getDetailValue = (value: string) => value || "—";
+
+interface SpecialistPhotoProps {
+  specialist: Specialist;
+  size: "small" | "portrait";
+}
+
+const SpecialistPhoto: React.FC<SpecialistPhotoProps> = ({
+  specialist,
+  size,
+}) => {
+  const [imageFailed, setImageFailed] = useState(false);
+  const photoUrl = specialist.photoUrl?.trim();
+
+  return (
+    <span
+      className={`specialist-photo specialist-photo--${size}`}
+      role="img"
+      aria-label={`Фото: ${getFullName(specialist)}`}
+    >
+      {photoUrl && !imageFailed ? (
+        <img
+          src={photoUrl}
+          alt=""
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="24" cy="17" r="9" />
+          <path d="M7 43c1.8-9 8-14 17-14s15.2 5 17 14" />
+        </svg>
+      )}
+    </span>
+  );
+};
 
 const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
@@ -85,7 +126,7 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
       }}
     >
       <section
-        className="specialists-modal"
+        className={`specialists-modal${selectedSpecialist ? " specialists-modal--profile" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="specialists-modal-title"
@@ -108,53 +149,64 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
             >
               &larr; Все врачи
             </button>
-            <h2 id="specialists-modal-title">
-              {getFullName(selectedSpecialist)}
-            </h2>
-            <div className="specialist-details">
-              <section className="specialist-details__section">
-                <h3>Основная информация</h3>
-                <dl>
-                  <div>
-                    <dt>Вид работы</dt>
-                    <dd>{getDetailValue(selectedSpecialist.workType)}</dd>
-                  </div>
-                  <div>
-                    <dt>Штатная должность</dt>
-                    <dd>{getDetailValue(selectedSpecialist.position)}</dd>
-                  </div>
-                  <div>
-                    <dt>Специальность</dt>
-                    <dd>{getDetailValue(selectedSpecialist.specialty)}</dd>
-                  </div>
-                  <div>
-                    <dt>Подразделение</dt>
-                    <dd>{getDetailValue(selectedSpecialist.department)}</dd>
-                  </div>
-                  <div>
-                    <dt>Стаж по специальности</dt>
-                    <dd>{getDetailValue(selectedSpecialist.experience)}</dd>
-                  </div>
-                </dl>
-              </section>
+            <div className="specialist-profile">
+              <SpecialistPhoto
+                specialist={selectedSpecialist}
+                size="portrait"
+              />
+              <div className="specialist-profile__content">
+                <header className="specialist-profile-header">
+                  <h2 id="specialists-modal-title">
+                    {getFullName(selectedSpecialist)}
+                  </h2>
+                  <p>{selectedSpecialist.position}</p>
+                </header>
+                <div className="specialist-details">
+                  <section className="specialist-details__section">
+                    <h3>Основная информация</h3>
+                    <dl>
+                      <div>
+                        <dt>Вид работы</dt>
+                        <dd>{getDetailValue(selectedSpecialist.workType)}</dd>
+                      </div>
+                      <div>
+                        <dt>Штатная должность</dt>
+                        <dd>{getDetailValue(selectedSpecialist.position)}</dd>
+                      </div>
+                      <div>
+                        <dt>Специальность</dt>
+                        <dd>{getDetailValue(selectedSpecialist.specialty)}</dd>
+                      </div>
+                      <div>
+                        <dt>Подразделение</dt>
+                        <dd>{getDetailValue(selectedSpecialist.department)}</dd>
+                      </div>
+                      <div>
+                        <dt>Стаж по специальности</dt>
+                        <dd>{getDetailValue(selectedSpecialist.experience)}</dd>
+                      </div>
+                    </dl>
+                  </section>
 
-              <section className="specialist-details__section">
-                <h3>Образование и квалификация</h3>
-                <dl>
-                  <div>
-                    <dt>Образование, специальность и организация</dt>
-                    <dd>{getDetailValue(selectedSpecialist.education)}</dd>
-                  </div>
-                  <div>
-                    <dt>Сертификат</dt>
-                    <dd>{getDetailValue(selectedSpecialist.certificate)}</dd>
-                  </div>
-                  <div>
-                    <dt>Категория</dt>
-                    <dd>{getDetailValue(selectedSpecialist.category)}</dd>
-                  </div>
-                </dl>
-              </section>
+                  <section className="specialist-details__section">
+                    <h3>Образование и квалификация</h3>
+                    <dl>
+                      <div>
+                        <dt>Образование, специальность и организация</dt>
+                        <dd>{getDetailValue(selectedSpecialist.education)}</dd>
+                      </div>
+                      <div>
+                        <dt>Сертификат</dt>
+                        <dd>{getDetailValue(selectedSpecialist.certificate)}</dd>
+                      </div>
+                      <div>
+                        <dt>Категория</dt>
+                        <dd>{getDetailValue(selectedSpecialist.category)}</dd>
+                      </div>
+                    </dl>
+                  </section>
+                </div>
+              </div>
             </div>
           </>
         ) : (
@@ -184,11 +236,14 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
                     type="button"
                     onClick={() => setSelectedSpecialist(specialist)}
                   >
-                    <span className="specialist-card__name">
-                      {getFullName(specialist)}
-                    </span>
-                    <span className="specialist-card__position">
-                      {specialist.position}
+                    <SpecialistPhoto specialist={specialist} size="small" />
+                    <span className="specialist-card__text">
+                      <span className="specialist-card__name">
+                        {getFullName(specialist)}
+                      </span>
+                      <span className="specialist-card__position">
+                        {specialist.position}
+                      </span>
                     </span>
                   </button>
                 ))}

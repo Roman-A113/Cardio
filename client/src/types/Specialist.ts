@@ -12,4 +12,5 @@ export interface Specialist {
   certificate: string;
   category: string;
   experience: string;
+  photoUrl: string | null;
 }

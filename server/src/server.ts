@@ -36,6 +36,7 @@ app.get("/api/doctors", async () => {
     category: doctor.category ?? "",
     experience:
       doctor.experienceYears === null ? "" : `${doctor.experienceYears} лет`,
+    photoUrl: doctor.photoUrl,
   }));
 });
 
