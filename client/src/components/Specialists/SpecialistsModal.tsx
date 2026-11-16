@@ -140,117 +140,123 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
           &times;
         </button>
 
-        {selectedSpecialist ? (
-          <>
-            <button
-              className="specialists-modal__back"
-              type="button"
-              onClick={() => setSelectedSpecialist(null)}
-            >
-              &larr; Все врачи
-            </button>
-            <div className="specialist-profile">
-              <SpecialistPhoto
-                specialist={selectedSpecialist}
-                size="portrait"
-              />
-              <div className="specialist-profile__content">
-                <header className="specialist-profile-header">
-                  <h2 id="specialists-modal-title">
-                    {getFullName(selectedSpecialist)}
-                  </h2>
-                  <p>{selectedSpecialist.position}</p>
-                </header>
-                <div className="specialist-details">
-                  <section className="specialist-details__section">
-                    <h3>Основная информация</h3>
-                    <dl>
-                      <div>
-                        <dt>Вид работы</dt>
-                        <dd>{getDetailValue(selectedSpecialist.workType)}</dd>
-                      </div>
-                      <div>
-                        <dt>Штатная должность</dt>
-                        <dd>{getDetailValue(selectedSpecialist.position)}</dd>
-                      </div>
-                      <div>
-                        <dt>Специальность</dt>
-                        <dd>{getDetailValue(selectedSpecialist.specialty)}</dd>
-                      </div>
-                      <div>
-                        <dt>Подразделение</dt>
-                        <dd>{getDetailValue(selectedSpecialist.department)}</dd>
-                      </div>
-                      <div>
-                        <dt>Стаж по специальности</dt>
-                        <dd>{getDetailValue(selectedSpecialist.experience)}</dd>
-                      </div>
-                    </dl>
-                  </section>
+        <div className="specialists-modal__content">
+          {selectedSpecialist ? (
+            <>
+              <button
+                className="specialists-modal__back"
+                type="button"
+                onClick={() => setSelectedSpecialist(null)}
+              >
+                &larr; Все врачи
+              </button>
+              <div className="specialist-profile">
+                <SpecialistPhoto
+                  specialist={selectedSpecialist}
+                  size="portrait"
+                />
+                <div className="specialist-profile__content">
+                  <header className="specialist-profile-header">
+                    <h2 id="specialists-modal-title">
+                      {getFullName(selectedSpecialist)}
+                    </h2>
+                    <p>{selectedSpecialist.position}</p>
+                  </header>
+                  <div className="specialist-details">
+                    <section className="specialist-details__section">
+                      <h3>Основная информация</h3>
+                      <dl>
+                        <div>
+                          <dt>Вид работы</dt>
+                          <dd>{getDetailValue(selectedSpecialist.workType)}</dd>
+                        </div>
+                        <div>
+                          <dt>Штатная должность</dt>
+                          <dd>{getDetailValue(selectedSpecialist.position)}</dd>
+                        </div>
+                        <div>
+                          <dt>Специальность</dt>
+                          <dd>{getDetailValue(selectedSpecialist.specialty)}</dd>
+                        </div>
+                        <div>
+                          <dt>Подразделение</dt>
+                          <dd>{getDetailValue(selectedSpecialist.department)}</dd>
+                        </div>
+                        <div>
+                          <dt>Стаж по специальности</dt>
+                          <dd>{getDetailValue(selectedSpecialist.experience)}</dd>
+                        </div>
+                      </dl>
+                    </section>
 
-                  <section className="specialist-details__section">
-                    <h3>Образование и квалификация</h3>
-                    <dl>
-                      <div>
-                        <dt>Образование, специальность и организация</dt>
-                        <dd>{getDetailValue(selectedSpecialist.education)}</dd>
-                      </div>
-                      <div>
-                        <dt>Сертификат</dt>
-                        <dd>{getDetailValue(selectedSpecialist.certificate)}</dd>
-                      </div>
-                      <div>
-                        <dt>Категория</dt>
-                        <dd>{getDetailValue(selectedSpecialist.category)}</dd>
-                      </div>
-                    </dl>
-                  </section>
+                    <section className="specialist-details__section">
+                      <h3>Образование и квалификация</h3>
+                      <dl>
+                        <div>
+                          <dt>Образование, специальность и организация</dt>
+                          <dd>
+                            {getDetailValue(selectedSpecialist.education)}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Сертификат</dt>
+                          <dd>
+                            {getDetailValue(selectedSpecialist.certificate)}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Категория</dt>
+                          <dd>{getDetailValue(selectedSpecialist.category)}</dd>
+                        </div>
+                      </dl>
+                    </section>
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 id="specialists-modal-title">Врачи</h2>
-            {isLoading ? (
-              <p className="specialists-message">Загружаем список врачей…</p>
-            ) : loadError ? (
-              <div className="specialists-message specialists-message--error">
-                <p>{loadError}</p>
-                <button
-                  type="button"
-                  className="specialists-modal__retry"
-                  onClick={() => setReloadKey((key) => key + 1)}
-                >
-                  Повторить
-                </button>
-              </div>
-            ) : specialists.length === 0 ? (
-              <p className="specialists-message">В базе пока нет врачей.</p>
-            ) : (
-              <div className="specialists-list">
-                {specialists.map((specialist) => (
+            </>
+          ) : (
+            <>
+              <h2 id="specialists-modal-title">Врачи</h2>
+              {isLoading ? (
+                <p className="specialists-message">Загружаем список врачей…</p>
+              ) : loadError ? (
+                <div className="specialists-message specialists-message--error">
+                  <p>{loadError}</p>
                   <button
-                    className="specialist-card"
-                    key={specialist.id}
                     type="button"
-                    onClick={() => setSelectedSpecialist(specialist)}
+                    className="specialists-modal__retry"
+                    onClick={() => setReloadKey((key) => key + 1)}
                   >
-                    <SpecialistPhoto specialist={specialist} size="small" />
-                    <span className="specialist-card__text">
-                      <span className="specialist-card__name">
-                        {getFullName(specialist)}
-                      </span>
-                      <span className="specialist-card__position">
-                        {specialist.position}
-                      </span>
-                    </span>
+                    Повторить
                   </button>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+                </div>
+              ) : specialists.length === 0 ? (
+                <p className="specialists-message">В базе пока нет врачей.</p>
+              ) : (
+                <div className="specialists-list">
+                  {specialists.map((specialist) => (
+                    <button
+                      className="specialist-card"
+                      key={specialist.id}
+                      type="button"
+                      onClick={() => setSelectedSpecialist(specialist)}
+                    >
+                      <SpecialistPhoto specialist={specialist} size="small" />
+                      <span className="specialist-card__text">
+                        <span className="specialist-card__name">
+                          {getFullName(specialist)}
+                        </span>
+                        <span className="specialist-card__position">
+                          {specialist.position}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </section>
     </div>
   );

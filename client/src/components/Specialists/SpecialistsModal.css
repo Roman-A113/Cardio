@@ -10,14 +10,23 @@
 }
 
 .specialists-modal {
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: min(760px, 100%);
   max-height: min(820px, 90vh);
-  overflow-y: auto;
+  overflow: hidden;
   padding: 36px;
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+}
+
+.specialists-modal__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .specialists-modal--profile {
@@ -92,16 +101,14 @@
   background: #fff;
   text-align: left;
   transition:
-    border-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .specialist-card:hover,
 .specialist-card:focus-visible {
-  border-color: var(--color-coral);
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px);
+  border-color: var(--color-beige);
+  background-color: var(--color-beige);
 }
 
 .specialist-card__name {
@@ -246,10 +253,6 @@
 
   .specialists-modal h2 {
     font-size: 22px;
-  }
-
-  .specialists-modal--profile {
-    overflow-y: auto;
   }
 
   .specialist-profile {
