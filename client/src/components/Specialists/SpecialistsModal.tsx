@@ -18,6 +18,47 @@ interface SpecialistPhotoProps {
   size: "small" | "portrait";
 }
 
+type SpecialistGroup = "all" | "doctors" | "nurses";
+interface Specialty {
+  id: number;
+  name: string;
+}
+
+const specialistGroupOptions: SpecialistGroup[] = ["all", "doctors", "nurses"];
+
+const specialistGroups: Record<
+  SpecialistGroup,
+  {
+    title: string;
+    endpoint: string;
+    staffType: string;
+    backLabel: string;
+    errorLabel: string;
+  }
+> = {
+  all: {
+    title: "Все специалисты",
+    endpoint: "medical-staff",
+    staffType: "ALL",
+    backLabel: "Все специалисты",
+    errorLabel: "специалистов",
+  },
+  doctors: {
+    title: "Врачи",
+    endpoint: "doctors",
+    staffType: "DOCTOR",
+    backLabel: "Все врачи",
+    errorLabel: "врачей",
+  },
+  nurses: {
+    title: "Средний медицинский персонал",
+    endpoint: "nurses",
+    staffType: "NURSE",
+    backLabel: "Все медсёстры",
+    errorLabel: "медсестёр",
+  },
+};
+
 const SpecialistPhoto: React.FC<SpecialistPhotoProps> = ({
   specialist,
   size,
@@ -32,11 +73,7 @@ const SpecialistPhoto: React.FC<SpecialistPhotoProps> = ({
       aria-label={`Фото: ${getFullName(specialist)}`}
     >
       {photoUrl && !imageFailed ? (
-        <img
-          src={photoUrl}
-          alt=""
-          onError={() => setImageFailed(true)}
-        />
+        <img src={photoUrl} alt="" onError={() => setImageFailed(true)} />
       ) : (
         <svg
           aria-hidden="true"
@@ -54,23 +91,36 @@ const SpecialistPhoto: React.FC<SpecialistPhotoProps> = ({
 
 const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
+  const [specialties, setSpecialties] = useState<Specialty[]>([]);
+  const [search, setSearch] = useState("");
+  const [specialtyId, setSpecialtyId] = useState("");
+  const [specialistGroup, setSpecialistGroup] =
+    useState<SpecialistGroup>("all");
   const [selectedSpecialist, setSelectedSpecialist] =
     useState<Specialist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [specialtiesError, setSpecialtiesError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let isCurrentRequest = true;
 
     const loadSpecialists = async () => {
-      setIsLoading(true);
-      setLoadError("");
+      const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+      const query = new URLSearchParams();
+      const trimmedSearch = search.trim();
+      if (trimmedSearch) {
+        query.set("search", trimmedSearch);
+      }
+      if (specialtyId) {
+        query.set("specialtyId", specialtyId);
+      }
 
       try {
-        const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-        const response = await fetch(`${apiUrl}/api/doctors`);
-
+        const response = await fetch(
+          `${apiUrl}/api/${specialistGroups[specialistGroup].endpoint}?${query}`,
+        );
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }
@@ -78,12 +128,13 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
         const result: Specialist[] = await response.json();
         if (isCurrentRequest) {
           setSpecialists(result);
+          setLoadError("");
         }
       } catch (error) {
-        console.error("Could not load doctors:", error);
+        console.error(`Could not load ${specialistGroup}:`, error);
         if (isCurrentRequest) {
           setLoadError(
-            "Не удалось загрузить список врачей. Проверьте подключение к серверу.",
+            `Не удалось загрузить список ${specialistGroups[specialistGroup].errorLabel}. Проверьте подключение к серверу.`,
           );
         }
       } finally {
@@ -93,11 +144,64 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
       }
     };
 
-    void loadSpecialists();
+    const timer = window.setTimeout(
+      () => {
+        setIsLoading(true);
+        setLoadError("");
+        void loadSpecialists();
+      },
+      search.trim() ? 250 : 0,
+    );
+
+    return () => {
+      isCurrentRequest = false;
+      window.clearTimeout(timer);
+    };
+  }, [reloadKey, specialistGroup, search, specialtyId]);
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    const loadSpecialties = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+      const selectedStaffType = specialistGroups[specialistGroup].staffType;
+
+      try {
+        const response = await fetch(
+          `${apiUrl}/api/specialties?staffType=${selectedStaffType}`,
+        );
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const result: Specialty[] = await response.json();
+        if (isCurrentRequest) {
+          setSpecialties(result);
+          setSpecialtiesError("");
+        }
+      } catch (error) {
+        console.error(
+          `Could not load ${selectedStaffType} specialties:`,
+          error,
+        );
+        if (isCurrentRequest) {
+          setSpecialties([]);
+          setSpecialtiesError("Не удалось загрузить список специальностей.");
+        }
+      }
+    };
+
+    void loadSpecialties();
     return () => {
       isCurrentRequest = false;
     };
-  }, [reloadKey]);
+  }, [reloadKey, specialistGroup]);
+
+  const changeSpecialistGroup = (group: SpecialistGroup) => {
+    setSpecialistGroup(group);
+    setSpecialtyId("");
+    setSelectedSpecialist(null);
+  };
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -148,7 +252,7 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
                 type="button"
                 onClick={() => setSelectedSpecialist(null)}
               >
-                &larr; Все врачи
+                &larr; {specialistGroups[specialistGroup].backLabel}
               </button>
               <div className="specialist-profile">
                 <SpecialistPhoto
@@ -176,15 +280,21 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
                         </div>
                         <div>
                           <dt>Специальность</dt>
-                          <dd>{getDetailValue(selectedSpecialist.specialty)}</dd>
+                          <dd>
+                            {getDetailValue(selectedSpecialist.specialty)}
+                          </dd>
                         </div>
                         <div>
                           <dt>Подразделение</dt>
-                          <dd>{getDetailValue(selectedSpecialist.department)}</dd>
+                          <dd>
+                            {getDetailValue(selectedSpecialist.department)}
+                          </dd>
                         </div>
                         <div>
                           <dt>Стаж по специальности</dt>
-                          <dd>{getDetailValue(selectedSpecialist.experience)}</dd>
+                          <dd>
+                            {getDetailValue(selectedSpecialist.experience)}
+                          </dd>
                         </div>
                       </dl>
                     </section>
@@ -216,9 +326,58 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
             </>
           ) : (
             <>
-              <h2 id="specialists-modal-title">Врачи</h2>
+              <h2 id="specialists-modal-title">Специалисты</h2>
+              <input
+                className="specialists-search"
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Поиск по ФИО, должности и другим данным"
+                aria-label="Поиск по специалистам"
+              />
+              <div className="specialists-filters">
+                <select
+                  className="specialists-specialty-filter"
+                  value={specialistGroup}
+                  onChange={(event) => {
+                    const group = specialistGroupOptions.find(
+                      (option) => option === event.target.value,
+                    );
+                    if (group) {
+                      changeSpecialistGroup(group);
+                    }
+                  }}
+                  aria-label="Фильтр по категории специалистов"
+                >
+                  {specialistGroupOptions.map((group) => (
+                    <option key={group} value={group}>
+                      {specialistGroups[group].title}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className="specialists-specialty-filter"
+                  value={specialtyId}
+                  onChange={(event) => setSpecialtyId(event.target.value)}
+                  aria-label="Фильтр по специальности"
+                  disabled={Boolean(specialtiesError)}
+                >
+                  <option value="">Все специальности</option>
+                  {specialties.map((specialty) => (
+                    <option key={specialty.id} value={specialty.id}>
+                      {specialty.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {specialtiesError && (
+                <p className="specialists-filter-error">{specialtiesError}</p>
+              )}
               {isLoading ? (
-                <p className="specialists-message">Загружаем список врачей…</p>
+                <p className="specialists-message">
+                  Загружаем список{" "}
+                  {specialistGroups[specialistGroup].errorLabel}…
+                </p>
               ) : loadError ? (
                 <div className="specialists-message specialists-message--error">
                   <p>{loadError}</p>
@@ -231,7 +390,11 @@ const SpecialistsModal: React.FC<SpecialistsModalProps> = ({ onClose }) => {
                   </button>
                 </div>
               ) : specialists.length === 0 ? (
-                <p className="specialists-message">В базе пока нет врачей.</p>
+                <p className="specialists-message">
+                  {search.trim() || specialtyId
+                    ? "По заданным условиям специалисты не найдены."
+                    : `В базе пока нет ${specialistGroups[specialistGroup].errorLabel}.`}
+                </p>
               ) : (
                 <div className="specialists-list">
                   {specialists.map((specialist) => (

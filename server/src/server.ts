@@ -11,9 +11,59 @@ app.get("/", async () => {
   return "Hello, World!";
 });
 
-app.get("/api/doctors", async () => {
-  const doctors = await prisma.medicalStaff.findMany({
-    where: { staffType: "DOCTOR" },
+type StaffType = "DOCTOR" | "NURSE" | "ALL";
+
+interface StaffFilters {
+  search?: string;
+  specialtyId?: number;
+}
+
+interface StaffQuery {
+  search?: string;
+  specialtyId?: string;
+}
+
+const getMedicalStaff = async (staffType: StaffType, filters: StaffFilters) => {
+  const search = filters.search?.trim();
+  const staff = await prisma.medicalStaff.findMany({
+    where: {
+      ...(staffType === "ALL" ? {} : { staffType }),
+      ...(filters.specialtyId ? { specialtyId: filters.specialtyId } : {}),
+      ...(search
+        ? {
+            OR: [
+              { lastName: { contains: search, mode: "insensitive" as const } },
+              { firstName: { contains: search, mode: "insensitive" as const } },
+              {
+                middleName: { contains: search, mode: "insensitive" as const },
+              },
+              { position: { contains: search, mode: "insensitive" as const } },
+              {
+                specialty: {
+                  is: {
+                    name: { contains: search, mode: "insensitive" as const },
+                  },
+                },
+              },
+              {
+                department: {
+                  is: {
+                    name: { contains: search, mode: "insensitive" as const },
+                  },
+                },
+              },
+              { education: { contains: search, mode: "insensitive" as const } },
+              {
+                certificate: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+              { category: { contains: search, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    },
     include: {
       specialty: { select: { name: true } },
       department: { select: { name: true } },
@@ -21,9 +71,10 @@ app.get("/api/doctors", async () => {
     orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
   });
 
-  return doctors.map((doctor) => ({
+  return staff.map((doctor) => ({
     id: String(doctor.id),
-    group: "Врачи",
+    group:
+      doctor.staffType === "DOCTOR" ? "Врачи" : "Средний медицинский персонал",
     lastName: doctor.lastName,
     firstName: doctor.firstName,
     middleName: doctor.middleName ?? "",
@@ -38,7 +89,54 @@ app.get("/api/doctors", async () => {
       doctor.experienceYears === null ? "" : `${doctor.experienceYears} лет`,
     photoUrl: doctor.photoUrl,
   }));
-});
+};
+
+const registerMedicalStaffRoute = (path: string, staffType: StaffType) => {
+  app.get<{ Querystring: StaffQuery }>(path, async (request, reply) => {
+    let specialtyId: number | undefined;
+    if (request.query.specialtyId) {
+      specialtyId = Number(request.query.specialtyId);
+      if (!Number.isSafeInteger(specialtyId) || specialtyId < 1) {
+        return reply.code(400).send({ message: "Invalid specialtyId" });
+      }
+    }
+
+    return getMedicalStaff(staffType, {
+      search: request.query.search,
+      specialtyId,
+    });
+  });
+};
+
+registerMedicalStaffRoute("/api/medical-staff", "ALL");
+registerMedicalStaffRoute("/api/doctors", "DOCTOR");
+registerMedicalStaffRoute("/api/nurses", "NURSE");
+
+app.get<{ Querystring: { staffType?: string } }>(
+  "/api/specialties",
+  async (request, reply) => {
+    const staffType = request.query.staffType;
+    if (
+      staffType !== "ALL" &&
+      staffType !== "DOCTOR" &&
+      staffType !== "NURSE"
+    ) {
+      return reply
+        .code(400)
+        .send({ message: "staffType must be ALL, DOCTOR or NURSE" });
+    }
+
+    return prisma.specialty.findMany({
+      where: {
+        medicalStaff: {
+          some: staffType === "ALL" ? {} : { staffType },
+        },
+      },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    });
+  },
+);
 
 const start = async () => {
   try {
