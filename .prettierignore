@@ -1,0 +1,10 @@
+node_modules/
+client/dist/
+server/dist/
+dist/
+
+server/src/generated/
+client/src/generated/
+
+package-lock.json
+package.json

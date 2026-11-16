@@ -14,213 +14,227 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  PATIENT
-  ADMIN
-  DOCTOR
-}
-
-enum AppointmentType {
-  OMS
-  PAID
-}
-
-enum AppointmentStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-}
-
-enum AppointmentSource {
-  SITE
-  PHONE
-}
-
-enum ContentCategory {
-  LEGAL
-  ABOUT
-  ANNIVERSARY
-  NEWS
-}
-
-model User {
-  id String @id @default(cuid())
-  email String? @unique
-  phone String? @unique
-  passwordHash String
-  role Role @default(PATIENT)
-  firstName String
-  middleName String
-  lastName String
-  birthDate DateTime?
-  omsPolicy String?
-  snils String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  appointments Appointment[]
-  reviews Review[]
-}
-
 model Specialty {
-  id String @id @default(cuid())
-  name String @unique
-  alias String @unique
-  description String?
-  createdAt DateTime @default(now())
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar(255)
+  medicalStaff MedicalStaff[]
 
-  doctors Doctor[]
-  services MedicalService[]
+  @@map("specialties")
 }
 
-model Doctor {
-  id String @id @default(cuid())
-  firstName String
-  middleName String
-  lastName String
-  position String
-  category String
-  degree String?
-  about String?
-  photoUrl String?
-  experienceYears Int?
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Department {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar(255)
+  medicalStaff MedicalStaff[]
 
-  specialtyId String
-  specialty Specialty @relation(fields: [specialtyId], references: [id])
-
-  educations DoctorEducation[]
-  accreditations DoctorAccreditation[]
-  schedules DoctorSchedule[]
-  services MedicalService[]
-  appointments Appointment[]
+  @@map("departments")
 }
 
-model DoctorEducation {
-  id String @id @default(cuid())
-  level String
-  institution String
-  year Int
-  specialty String
-  qualification String?
-
-  doctorId String
-  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+enum StaffType {
+  DOCTOR   // врач
+  NURSE    // средний медицинский персонал
 }
 
-model DoctorAccreditation {
-  id String @id @default(cuid())
-  specialty String
-  documentNumber String?
-  validUntil DateTime?
-
-  doctorId String
-  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+enum EmploymentType {
+  MAIN        // Основной
+  PART_TIME   // Совместитель
 }
 
-model DoctorSchedule {
-  id String @id @default(cuid())
-  weekday Int
-  startTime String
-  endTime String
+model MedicalStaff {
+  id Int @id @default(autoincrement())
 
-  doctorId String
-  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  staffType       StaffType @map("staff_type")
+  lastName        String    @map("last_name") @db.VarChar(100)
+  firstName       String    @map("first_name") @db.VarChar(100)
+  middleName      String?   @map("middle_name") @db.VarChar(100)
+  employmentType  EmploymentType @map("employment_type")
+  position       String         @db.VarChar(255)
+
+  specialtyId Int?  @map("specialty_id")
+  specialty   Specialty? @relation(fields: [specialtyId], references: [id])
+
+  departmentId Int? @map("department_id")
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  education       String? @db.Text
+  certificate     String? @db.Text
+  category        String? @db.Text
+  experienceYears Int?      @map("experience_years")
+
+  @@map("medical_staff")
 }
 
-model MedicalService {
-  id String @id @default(cuid())
-  name String
-  description String?
-  price Decimal @db.Decimal(10, 2)
-  code String?
-  isPaid Boolean @default(true)
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// enum Role {
+//   PATIENT
+//   ADMIN
+//   DOCTOR
+// }
 
-  specialtyId String?
-  specialty Specialty? @relation(fields: [specialtyId], references: [id])
+// enum AppointmentType {
+//   OMS
+//   PAID
+// }
 
-  doctors Doctor[]
-  appointments Appointment[]
-}
+// enum AppointmentStatus {
+//   PENDING
+//   CONFIRMED
+//   CANCELLED
+//   COMPLETED
+// }
 
-model Appointment {
-  id String @id @default(cuid())
-  scheduledAt DateTime
-  durationMinutes Int @default(15)
-  type AppointmentType @default(OMS)
-  status AppointmentStatus @default(PENDING)
-  source AppointmentSource @default(SITE)
-  comment String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// enum AppointmentSource {
+//   SITE
+//   PHONE
+// }
 
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+// enum ContentCategory {
+//   LEGAL
+//   ABOUT
+//   ANNIVERSARY
+//   NEWS
+// }
 
-  doctorId String
-  doctor Doctor @relation(fields: [doctorId], references: [id])
+// model User {
+//   id           String    @id @default(cuid())
+//   email        String?   @unique
+//   phone        String?   @unique
+//   passwordHash String
+//   role         Role      @default(PATIENT)
+//   firstName    String
+//   middleName   String
+//   lastName     String
+//   birthDate    DateTime?
+//   omsPolicy    String?
+//   snils        String?
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
 
-  serviceId String?
-  service MedicalService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+//   appointments Appointment[]
+//   reviews      Review[]
+// }
 
-  @@unique([doctorId, scheduledAt])
-  @@index([userId])
-  @@index([scheduledAt])
-}
+// model DoctorEducation {
+//   id            String  @id @default(cuid())
+//   level         String
+//   institution   String
+//   year          Int
+//   specialty     String
+//   qualification String?
 
-model ContentPage {
-  id String @id @default(cuid())
-  alias String @unique
-  title String
-  body String
-  category ContentCategory @default(LEGAL)
-  isPublished Boolean @default(false)
-  sortOrder Int @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+//   doctorId String
+//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+// }
 
-  @@index([category])
-}
+// model DoctorAccreditation {
+//   id             String    @id @default(cuid())
+//   specialty      String
+//   documentNumber String?
+//   validUntil     DateTime?
 
-model Review {
-  id String @id @default(cuid())
-  authorName String
-  text String
-  rating Int?
-  isPublished Boolean @default(false)
-  createdAt DateTime @default(now())
+//   doctorId String
+//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+// }
 
-  userId String?
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+// model DoctorSchedule {
+//   id        String @id @default(cuid())
+//   weekday   Int
+//   startTime String
+//   endTime   String
 
-  @@index([isPublished])
-}
+//   doctorId String
+//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+// }
 
-model OrganizationInfo {
-  id Int @id @default(1)
-  fullNmae String
-  shortName String?
-  address String
-  postalAddress String?
-  phone String
-  fax                String?
-  email              String
-  website            String?
-  ogrn               String?
-  inn                String?
-  kpp                String?
-  founder            String?
-  structure          String?
-  workSchedule       String?
-  receptionSchedule  String?
-  licenseNumber      String?
-  licenseDate        DateTime?
-  licenseRegistryUrl String?
-  updatedAt          DateTime  @updatedAt
-}
+// model MedicalService {
+//   id          String   @id @default(cuid())
+//   name        String
+//   description String?
+//   price       Decimal  @db.Decimal(10, 2)
+//   code        String?
+//   isPaid      Boolean  @default(true)
+//   isActive    Boolean  @default(true)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   specialtyId String?
+//   specialty   Specialty? @relation(fields: [specialtyId], references: [id])
+
+//   doctors      Doctor[]
+//   appointments Appointment[]
+// }
+
+// model Appointment {
+//   id              String            @id @default(cuid())
+//   scheduledAt     DateTime
+//   durationMinutes Int               @default(15)
+//   type            AppointmentType   @default(OMS)
+//   status          AppointmentStatus @default(PENDING)
+//   source          AppointmentSource @default(SITE)
+//   comment         String?
+//   createdAt       DateTime          @default(now())
+//   updatedAt       DateTime          @updatedAt
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   doctorId String
+//   doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+//   serviceId String?
+//   service   MedicalService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+//   @@unique([doctorId, scheduledAt])
+//   @@index([userId])
+//   @@index([scheduledAt])
+// }
+
+// model ContentPage {
+//   id          String          @id @default(cuid())
+//   alias       String          @unique
+//   title       String
+//   body        String
+//   category    ContentCategory @default(LEGAL)
+//   isPublished Boolean         @default(false)
+//   sortOrder   Int             @default(0)
+//   createdAt   DateTime        @default(now())
+//   updatedAt   DateTime        @updatedAt
+
+//   @@index([category])
+// }
+
+// model Review {
+//   id          String   @id @default(cuid())
+//   authorName  String
+//   text        String
+//   rating      Int?
+//   isPublished Boolean  @default(false)
+//   createdAt   DateTime @default(now())
+
+//   userId String?
+//   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+//   @@index([isPublished])
+// }
+
+// model OrganizationInfo {
+//   id                 Int       @id @default(1)
+//   fullNmae           String
+//   shortName          String?
+//   address            String
+//   postalAddress      String?
+//   phone              String
+//   fax                String?
+//   email              String
+//   website            String?
+//   ogrn               String?
+//   inn                String?
+//   kpp                String?
+//   founder            String?
+//   structure          String?
+//   workSchedule       String?
+//   receptionSchedule  String?
+//   licenseNumber      String?
+//   licenseDate        DateTime?
+//   licenseRegistryUrl String?
+//   updatedAt          DateTime  @updatedAt
+// }

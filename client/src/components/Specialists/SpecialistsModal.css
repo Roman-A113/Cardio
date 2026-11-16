@@ -1,0 +1,166 @@
+.specialists-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(25, 30, 35, 0.55);
+}
+
+.specialists-modal {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(820px, 90vh);
+  overflow-y: auto;
+  padding: 36px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+}
+
+.specialists-modal h2 {
+  margin: 0 44px 24px 0;
+  color: #333;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.specialists-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  color: #555;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.specialists-modal__close:hover {
+  color: var(--color-coral);
+}
+
+.specialists-modal__back {
+  margin-bottom: 18px;
+  color: #555;
+  font-size: 14px;
+}
+
+.specialists-modal__back:hover {
+  color: var(--color-coral);
+}
+
+.specialists-list {
+  display: grid;
+  gap: 12px;
+}
+
+.specialists-message {
+  color: #555;
+  font-size: 15px;
+}
+
+.specialists-message--error {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  color: #a12622;
+}
+
+.specialists-modal__retry {
+  color: var(--color-coral);
+  font-weight: 600;
+}
+
+.specialists-modal__retry:hover {
+  color: var(--color-coral-hover);
+}
+
+.specialist-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.specialist-card:hover,
+.specialist-card:focus-visible {
+  border-color: var(--color-coral);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.specialist-card__name {
+  color: #333;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.specialist-card__position {
+  color: #666;
+  font-size: 14px;
+}
+
+.specialist-details {
+  display: grid;
+  gap: 24px;
+}
+
+.specialist-details__section h3 {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 17px;
+}
+
+.specialist-details dl {
+  display: grid;
+  gap: 10px;
+}
+
+.specialist-details dl > div {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.8fr) 1.2fr;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.specialist-details dt {
+  color: #6a6a6a;
+  font-size: 14px;
+}
+
+.specialist-details dd {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .specialists-overlay {
+    padding: 12px;
+  }
+
+  .specialists-modal {
+    max-height: 94vh;
+    padding: 28px 20px;
+  }
+
+  .specialists-modal h2 {
+    font-size: 22px;
+  }
+
+  .specialist-details dl > div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+}
