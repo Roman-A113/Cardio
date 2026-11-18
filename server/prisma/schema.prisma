@@ -31,37 +31,36 @@ model Department {
 }
 
 enum StaffType {
-  DOCTOR   // врач
-  NURSE    // средний медицинский персонал
+  DOCTOR // врач
+  NURSE // средний медицинский персонал
 }
 
 enum EmploymentType {
-  MAIN        // Основной
-  PART_TIME   // Совместитель
+  MAIN // Основной
+  PART_TIME // Совместитель
 }
 
 model MedicalStaff {
   id Int @id @default(autoincrement())
 
-  staffType       StaffType @map("staff_type")
-  lastName        String    @map("last_name") @db.VarChar(100)
-  firstName       String    @map("first_name") @db.VarChar(100)
-  middleName      String?   @map("middle_name") @db.VarChar(100)
-  employmentType  EmploymentType @map("employment_type")
+  staffType      StaffType      @map("staff_type")
+  lastName       String         @map("last_name") @db.VarChar(100)
+  firstName      String         @map("first_name") @db.VarChar(100)
+  middleName     String?        @map("middle_name") @db.VarChar(100)
+  employmentType EmploymentType @map("employment_type")
   position       String         @db.VarChar(255)
-
-  specialtyId Int?  @map("specialty_id")
-  specialty   Specialty? @relation(fields: [specialtyId], references: [id])
-
-  departmentId Int? @map("department_id")
-  department   Department? @relation(fields: [departmentId], references: [id])
 
   education       String? @db.Text
   certificate     String? @db.Text
   category        String? @db.Text
-  experienceYears Int?      @map("experience_years")
+  experienceYears Int?    @map("experience_years")
+  photoUrl        String? @map("photo_url") @db.VarChar(500)
 
-  photoUrl String? @map("photo_url") @db.VarChar(500)
+  specialtyId Int?       @map("specialty_id")
+  specialty   Specialty? @relation(fields: [specialtyId], references: [id])
+
+  departmentId Int?        @map("department_id")
+  department   Department? @relation(fields: [departmentId], references: [id])
 
   @@map("medical_staff")
 }

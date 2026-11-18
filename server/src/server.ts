@@ -126,15 +126,24 @@ app.get<{ Querystring: { staffType?: string } }>(
         .send({ message: "staffType must be ALL, DOCTOR or NURSE" });
     }
 
-    return prisma.specialty.findMany({
-      where: {
-        medicalStaff: {
-          some: staffType === "ALL" ? {} : { staffType },
+    try {
+      const specialties = await prisma.specialty.findMany({
+        where: {
+          medicalStaff: {
+            some: staffType === "ALL" ? {} : { staffType },
+          },
         },
-      },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    });
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      });
+      return specialties;
+    } catch (error) {
+      console.error("Database connection error:", error);
+
+      return reply.code(503).send({
+        message: "Database temporarily unavailable. Please try again later.",
+      });
+    }
   },
 );
 
