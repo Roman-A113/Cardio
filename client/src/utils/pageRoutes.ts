@@ -46,7 +46,7 @@ export const createPageSlug = (title: string): string =>
     .replace(/^-+|-+$/g, "");
 
 export const createPagePath = (title: string): string =>
-  `/page/${createPageSlug(title)}`;
+  `/${createPageSlug(title)}`;
 
 export const getPageTitle = (slug: string): string => {
   const menuTitles = menuData.flatMap((menuItem) => [

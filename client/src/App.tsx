@@ -27,7 +27,7 @@ const App: React.FC = () => {
             }
           />
           <Route path="/specialists" element={<SpecialistsPage />} />
-          <Route path="/page/:slug" element={<PageTemplate />} />
+          <Route path="/:slug" element={<PageTemplate />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
