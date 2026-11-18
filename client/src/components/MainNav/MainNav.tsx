@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { menuData } from "../../data/MenuData";
+import { createPagePath } from "../../utils/pageRoutes";
 import "./MainNav.css";
 
 const MainNav: React.FC = () => {
@@ -8,17 +10,23 @@ const MainNav: React.FC = () => {
       <ul>
         {menuData.map((menuItem) => (
           <li key={menuItem.title} className="nav-item">
-            <a href="#">{menuItem.title}</a>
+            {menuItem.links.length > 0 ? (
+              <Link to={createPagePath(menuItem.title)}>
+                {menuItem.title}
+              </Link>
+            ) : (
+              <Link to={createPagePath(menuItem.title)}>
+                {menuItem.title}
+              </Link>
+            )}
             {menuItem.links.length > 0 && (
               <ul className="dropdown">
                 {menuItem.links.map((link, index) => (
                   <li key={index}>
                     {link === "Специалисты" ? (
-                      <a href="/specialists">
-                        {link}
-                      </a>
+                      <Link to="/specialists">{link}</Link>
                     ) : (
-                      <a href="#">{link}</a>
+                      <Link to={createPagePath(link)}>{link}</Link>
                     )}
                   </li>
                 ))}
