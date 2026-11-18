@@ -5,16 +5,26 @@ import Footer from "./components/Footer/Footer.tsx";
 import "./App.css";
 import MainNav from "./components/MainNav/MainNav.tsx";
 import HeroSection from "./components/HeroSection/HeroSection.tsx";
+import SpecialistsPage from "./components/Specialists/SpecialistsPage.tsx";
 import "./styles/variables.css";
 
 const App: React.FC = () => {
+  const isSpecialistsPage =
+    window.location.pathname.replace(/\/+$/, "") === "/specialists";
+
   return (
     <div className="app-container">
       <Header />
       <MainNav />
       <main>
-        <HeroSection />
-        <News />
+        {isSpecialistsPage ? (
+          <SpecialistsPage />
+        ) : (
+          <>
+            <HeroSection />
+            <News />
+          </>
+        )}
       </main>
       <Footer />
     </div>

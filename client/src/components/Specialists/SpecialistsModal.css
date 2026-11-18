@@ -22,6 +22,24 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
 }
 
+.specialists-page {
+  min-height: 60vh;
+  padding: 48px 24px 64px;
+  background: #fff;
+}
+
+.specialists-page__content {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+.specialists-page__content h1 {
+  margin: 0 0 24px;
+  color: #333;
+  font-size: 30px;
+  line-height: 1.25;
+}
+
 .specialists-modal__content {
   flex: 1 1 auto;
   min-height: 0;
@@ -50,16 +68,6 @@
 }
 
 .specialists-modal__close:hover {
-  color: var(--color-coral);
-}
-
-.specialists-modal__back {
-  margin-bottom: 18px;
-  color: #555;
-  font-size: 14px;
-}
-
-.specialists-modal__back:hover {
   color: var(--color-coral);
 }
 
@@ -305,6 +313,14 @@
 }
 
 @media (max-width: 600px) {
+  .specialists-page {
+    padding: 32px 16px 48px;
+  }
+
+  .specialists-page__content h1 {
+    font-size: 26px;
+  }
+
   .specialists-overlay {
     padding: 12px;
   }

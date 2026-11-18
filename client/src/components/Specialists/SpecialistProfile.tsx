@@ -4,23 +4,10 @@ import { getDetailValue, getFullName } from "./specialistUtils";
 
 interface SpecialistProfileProps {
   specialist: Specialist;
-  backLabel: string;
-  onBack: () => void;
 }
 
-const SpecialistProfile: React.FC<SpecialistProfileProps> = ({
-  specialist,
-  backLabel,
-  onBack,
-}) => (
+const SpecialistProfile: React.FC<SpecialistProfileProps> = ({ specialist }) => (
   <>
-    <button
-      className="specialists-modal__back"
-      type="button"
-      onClick={onBack}
-    >
-      &larr; {backLabel}
-    </button>
     <div className="specialist-profile">
       <SpecialistPhoto specialist={specialist} size="portrait" />
       <div className="specialist-profile__content">

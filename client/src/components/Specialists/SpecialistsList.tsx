@@ -40,7 +40,7 @@ const SpecialistsList: React.FC<SpecialistsListProps> = ({
   onRetry,
 }) => (
   <>
-    <h2 id="specialists-modal-title">Специалисты</h2>
+    <h1>Специалисты</h1>
     <input
       className="specialists-search"
       type="search"

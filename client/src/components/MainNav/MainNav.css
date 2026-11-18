@@ -76,25 +76,6 @@
   border-bottom: none;
 }
 
-.dropdown__specialists-button {
-  display: block;
-  width: 100%;
-  padding: 12px 20px;
-  color: #333;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: left;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-.dropdown__specialists-button:hover,
-.dropdown__specialists-button:focus-visible {
-  background-color: var(--color-beige);
-  color: #333;
-}
-
 .dropdown li a:hover {
   background-color: var(--color-beige);
   color: #333;
