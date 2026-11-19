@@ -1,7 +1,13 @@
 import React from "react";
 import "./Header.css";
 
-const Header: React.FC = () => {
+type View = "home" | "appointment" | "lk";
+
+interface HeaderProps {
+  onNavigate: (view: View) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   return (
     <header className="header">
       <div className="header-top">
@@ -47,7 +53,19 @@ const Header: React.FC = () => {
         </div>
 
         <div className="search-section">
-          <form className="search-form">
+          <form
+            className="search-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const input = e.currentTarget.querySelector(
+                ".search-input",
+              ) as HTMLInputElement | null;
+              if (input?.value.trim()) {
+                console.log("Поиск:", input.value.trim());
+                alert("Поиск по сайту пока в разработке");
+              }
+            }}
+          >
             <input
               type="text"
               placeholder="Поиск по сайту..."
@@ -103,10 +121,24 @@ const Header: React.FC = () => {
             </svg>
           </button>
           <div className="auth-buttons">
-            <a href="#" className="btn btn-outline">
+            <a
+              href="#"
+              className="btn btn-outline"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("lk");
+              }}
+            >
               Личный кабинет
             </a>
-            <a href="#" className="btn btn-primary">
+            <a
+              href="#"
+              className="btn btn-primary"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("appointment");
+              }}
+            >
               Записаться
             </a>
           </div>

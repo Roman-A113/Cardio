@@ -1,0 +1,46 @@
+.lk-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: inherit;
+}
+
+.lk-page h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lk-page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.lk-page th,
+.lk-page td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.lk-page th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.lk-page td {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.lk-page tr:last-child td {
+  border-bottom: none;
+}
+
+.lk-page tr:hover {
+  background: #f9f9f9;
+}

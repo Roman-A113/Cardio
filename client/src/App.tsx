@@ -1,19 +1,20 @@
 import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header.tsx";
 import News from "./components/News/News.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import "./App.css";
 import MainNav from "./components/MainNav/MainNav.tsx";
 import HeroSection from "./components/HeroSection/HeroSection.tsx";
-import SpecialistsPage from "./components/Specialists/SpecialistsPage.tsx";
-import PageTemplate from "./components/PageTemplate/PageTemplate.tsx";
 import "./styles/variables.css";
 
+type View = "home" | "appointment" | "lk";
+
 const App: React.FC = () => {
+  const [view, setView] = useState<View>("home");
+
   return (
     <div className="app-container">
-      <Header />
+      <Header onNavigate={setView} />
       <MainNav />
       <main>
         <Routes>
@@ -30,6 +31,14 @@ const App: React.FC = () => {
           <Route path="/:slug" element={<PageTemplate />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        {view === "home" && (
+          <>
+            <HeroSection />
+            <News />
+          </>
+        )}
+        {view === "appointment" && <AppointmentForm />}
+        {view === "lk" && <LKPage />}
       </main>
       <Footer />
     </div>
