@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Try Prisma Accelerate: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client"
@@ -18,6 +18,7 @@ model Specialty {
   id           Int            @id @default(autoincrement())
   name         String         @unique @db.VarChar(255)
   medicalStaff MedicalStaff[]
+  services     MedicalService[]
 
   @@map("specialties")
 }
@@ -63,180 +64,187 @@ model MedicalStaff {
 
   photoUrl String? @map("photo_url") @db.VarChar(500)
 
+  appointments   Appointment[]
+  educations     DoctorEducation[]
+  accreditations DoctorAccreditation[]
+  schedules      DoctorSchedule[]
+
   @@map("medical_staff")
 }
 
-// enum Role {
-//   PATIENT
-//   ADMIN
-//   DOCTOR
-// }
+enum Role {
+  PATIENT
+  ADMIN
+  DOCTOR
+}
 
-// enum AppointmentType {
-//   OMS
-//   PAID
-// }
+enum AppointmentType {
+  OMS
+  PAID
+}
 
-// enum AppointmentStatus {
-//   PENDING
-//   CONFIRMED
-//   CANCELLED
-//   COMPLETED
-// }
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
 
-// enum AppointmentSource {
-//   SITE
-//   PHONE
-// }
+enum AppointmentSource {
+  SITE
+  PHONE
+}
 
-// enum ContentCategory {
-//   LEGAL
-//   ABOUT
-//   ANNIVERSARY
-//   NEWS
-// }
+enum ContentCategory {
+  LEGAL
+  ABOUT
+  ANNIVERSARY
+  NEWS
+}
 
-// model User {
-//   id           String    @id @default(cuid())
-//   email        String?   @unique
-//   phone        String?   @unique
-//   passwordHash String
-//   role         Role      @default(PATIENT)
-//   firstName    String
-//   middleName   String
-//   lastName     String
-//   birthDate    DateTime?
-//   omsPolicy    String?
-//   snils        String?
-//   createdAt    DateTime  @default(now())
-//   updatedAt    DateTime  @updatedAt
+model User {
+  id           String    @id @default(cuid())
+  email        String?   @unique
+  phone        String?   @unique
+  passwordHash String
+  role         Role      @default(PATIENT)
+  firstName    String
+  middleName   String
+  lastName     String
+  birthDate    DateTime?
+  omsPolicy    String?
+  snils        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-//   appointments Appointment[]
-//   reviews      Review[]
-// }
+  appointments Appointment[]
+  reviews      Review[]
+}
 
-// model DoctorEducation {
-//   id            String  @id @default(cuid())
-//   level         String
-//   institution   String
-//   year          Int
-//   specialty     String
-//   qualification String?
+model DoctorEducation {
+  id            String  @id @default(cuid())
+  level         String
+  institution   String
+  year          Int
+  specialty     String
+  qualification String?
 
-//   doctorId String
-//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-// }
+  doctorId Int
+  doctor   MedicalStaff @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
 
-// model DoctorAccreditation {
-//   id             String    @id @default(cuid())
-//   specialty      String
-//   documentNumber String?
-//   validUntil     DateTime?
+model DoctorAccreditation {
+  id             String    @id @default(cuid())
+  specialty      String
+  documentNumber String?
+  validUntil     DateTime?
 
-//   doctorId String
-//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-// }
+  doctorId Int
+  doctor   MedicalStaff @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
 
-// model DoctorSchedule {
-//   id        String @id @default(cuid())
-//   weekday   Int
-//   startTime String
-//   endTime   String
+model DoctorSchedule {
+  id        String @id @default(cuid())
+  weekday   Int
+  startTime String
+  endTime   String
 
-//   doctorId String
-//   doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-// }
+  staffId Int
+  staff   MedicalStaff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+}
 
-// model MedicalService {
-//   id          String   @id @default(cuid())
-//   name        String
-//   description String?
-//   price       Decimal  @db.Decimal(10, 2)
-//   code        String?
-//   isPaid      Boolean  @default(true)
-//   isActive    Boolean  @default(true)
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
+model MedicalService {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  code        String?
+  isPaid      Boolean  @default(true)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-//   specialtyId String?
-//   specialty   Specialty? @relation(fields: [specialtyId], references: [id])
+  specialtyId Int?
+  specialty   Specialty? @relation(fields: [specialtyId], references: [id])
 
-//   doctors      Doctor[]
-//   appointments Appointment[]
-// }
+  appointments Appointment[]
+}
 
-// model Appointment {
-//   id              String            @id @default(cuid())
-//   scheduledAt     DateTime
-//   durationMinutes Int               @default(15)
-//   type            AppointmentType   @default(OMS)
-//   status          AppointmentStatus @default(PENDING)
-//   source          AppointmentSource @default(SITE)
-//   comment         String?
-//   createdAt       DateTime          @default(now())
-//   updatedAt       DateTime          @updatedAt
+model Appointment {
+  id              String            @id @default(cuid())
+  scheduledAt     DateTime
+  durationMinutes Int               @default(15)
+  type            AppointmentType   @default(OMS)
+  status          AppointmentStatus @default(PENDING)
+  source          AppointmentSource @default(SITE)
+  comment         String?
+  patientName     String
+  patientPhone    String
+  patientEmail    String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
-//   userId String
-//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+  user   User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-//   doctorId String
-//   doctor   Doctor @relation(fields: [doctorId], references: [id])
+  staffId Int
+  staff   MedicalStaff @relation(fields: [staffId], references: [id])
 
-//   serviceId String?
-//   service   MedicalService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  serviceId String?
+  service   MedicalService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 
-//   @@unique([doctorId, scheduledAt])
-//   @@index([userId])
-//   @@index([scheduledAt])
-// }
+  @@unique([staffId, scheduledAt])
+  @@index([userId])
+  @@index([scheduledAt])
+}
 
-// model ContentPage {
-//   id          String          @id @default(cuid())
-//   alias       String          @unique
-//   title       String
-//   body        String
-//   category    ContentCategory @default(LEGAL)
-//   isPublished Boolean         @default(false)
-//   sortOrder   Int             @default(0)
-//   createdAt   DateTime        @default(now())
-//   updatedAt   DateTime        @updatedAt
+model ContentPage {
+  id          String          @id @default(cuid())
+  alias       String          @unique
+  title       String
+  body        String
+  category    ContentCategory @default(LEGAL)
+  isPublished Boolean         @default(false)
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
-//   @@index([category])
-// }
+  @@index([category])
+}
 
-// model Review {
-//   id          String   @id @default(cuid())
-//   authorName  String
-//   text        String
-//   rating      Int?
-//   isPublished Boolean  @default(false)
-//   createdAt   DateTime @default(now())
+model Review {
+  id          String   @id @default(cuid())
+  authorName  String
+  text        String
+  rating      Int?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
 
-//   userId String?
-//   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String?
+  user   User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-//   @@index([isPublished])
-// }
+  @@index([isPublished])
+}
 
-// model OrganizationInfo {
-//   id                 Int       @id @default(1)
-//   fullNmae           String
-//   shortName          String?
-//   address            String
-//   postalAddress      String?
-//   phone              String
-//   fax                String?
-//   email              String
-//   website            String?
-//   ogrn               String?
-//   inn                String?
-//   kpp                String?
-//   founder            String?
-//   structure          String?
-//   workSchedule       String?
-//   receptionSchedule  String?
-//   licenseNumber      String?
-//   licenseDate        DateTime?
-//   licenseRegistryUrl String?
-//   updatedAt          DateTime  @updatedAt
-// }
+model OrganizationInfo {
+  id                 Int       @id @default(1)
+  fullName           String
+  shortName          String?
+  address            String
+  postalAddress      String?
+  phone              String
+  fax                String?
+  email              String
+  website            String?
+  ogrn               String?
+  inn                String?
+  kpp                String?
+  founder            String?
+  structure          String?
+  workSchedule       String?
+  receptionSchedule  String?
+  licenseNumber      String?
+  licenseDate        DateTime?
+  licenseRegistryUrl String?
+  updatedAt          DateTime  @updatedAt
+}
