@@ -1,13 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Header.css";
 
-type View = "home" | "appointment" | "lk";
-
-interface HeaderProps {
-  onNavigate: (view: View) => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
+const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="header-top">
@@ -121,26 +116,18 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             </svg>
           </button>
           <div className="auth-buttons">
-            <a
-              href="#"
+            <Link
+              to="/lk"
               className="btn btn-outline"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate("lk");
-              }}
             >
               Личный кабинет
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/appointment"
               className="btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate("appointment");
-              }}
             >
               Записаться
-            </a>
+            </Link>
           </div>
         </div>
       </div>
