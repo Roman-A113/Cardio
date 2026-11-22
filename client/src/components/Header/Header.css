@@ -127,11 +127,11 @@
 
 .btn-outline {
   color: white;
-  background-color: var(--color-blue);
+  background-color: var(--color-lilac);
 }
 
 .btn-outline:hover {
-  background-color: var(--color-blue-hover);
+  background-color: var(--color-lilac-hover);
   color: white;
 }
 
@@ -156,7 +156,7 @@
   align-items: center;
   gap: 5px;
   font-size: 14px;
-  color: #4fc3f7;
+  color: var(--color-lilac);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;

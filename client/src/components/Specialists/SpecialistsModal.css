@@ -98,8 +98,8 @@
 
 .specialists-group-switch__button:hover,
 .specialists-group-switch__button--active {
-  border-color: var(--color-beige);
-  background-color: var(--color-beige);
+  border-color: var(--color-creamy);
+  background-color: var(--color-creamy);
   color: #333;
 }
 
@@ -178,8 +178,8 @@
 
 .specialist-card:hover,
 .specialist-card:focus-visible {
-  border-color: var(--color-beige);
-  background-color: var(--color-beige);
+  border-color: var(--color-creamy);
+  background-color: var(--color-creamy);
 }
 
 .specialist-card__name {

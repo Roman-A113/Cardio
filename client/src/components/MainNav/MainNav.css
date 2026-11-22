@@ -70,13 +70,15 @@
   color: #333;
   font-size: 16px;
   font-weight: 400;
+  border: 1px solid transparent;
+  box-sizing: border-box;
   transition:
-    background-color 0.2s,
+    border-color 0.2s,
     color 0.2s;
-  border-bottom: none;
 }
 
 .dropdown li a:hover {
-  background-color: var(--color-beige);
-  color: #333;
+  color: var(--color-coral);
+  border-top-color: var(--color-coral);
+  border-bottom-color: var(--color-coral);
 }

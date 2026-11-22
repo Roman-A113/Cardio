@@ -6,6 +6,8 @@
 
 .my-swiper {
   height: 100%;
+  --swiper-navigation-color: var(--color-lilac);
+  --swiper-pagination-color: var(--color-lilac);
 }
 
 .slide-image {
