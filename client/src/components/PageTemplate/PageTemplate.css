@@ -16,3 +16,25 @@
   border-radius: 8px;
   background: #f9f9f9;
 }
+
+.page-template__not-found p {
+  min-height: auto;
+  margin-bottom: 16px;
+}
+
+.page-template__home-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: var(--color-coral);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-template__home-link:hover {
+  background: var(--color-coral-hover);
+  color: #fff;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header.tsx";
 import News from "./components/News/News.tsx";
 import Footer from "./components/Footer/Footer.tsx";
@@ -11,6 +11,7 @@ import AppointmentForm from "./components/AppointmentForm/AppointmentForm.tsx";
 import LKPage from "./components/LKPage/LKPage.tsx";
 import PageTemplate from "./components/PageTemplate/PageTemplate.tsx";
 import SpecialistsPage from "./components/Specialists/SpecialistsPage.tsx";
+import HistoryPage from "./components/menuPages/HistoryPage/HistoryPage.tsx";
 
 const App: React.FC = () => {
   return (
@@ -28,11 +29,12 @@ const App: React.FC = () => {
               </>
             }
           />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/appointment" element={<AppointmentForm />} />
           <Route path="/lk" element={<LKPage />} />
-          <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/:slug" element={<PageTemplate />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<PageTemplate />} />
         </Routes>
       </main>
       <Footer />
