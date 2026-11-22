@@ -146,13 +146,21 @@ export default function AppointmentForm() {
   }, [scheduleOpen, selectedSlot]);
 
   const filteredDoctors = useMemo(() => {
-    const searchLower = search.trim().toLowerCase();
+    const searchTerms = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
     const specialty = specialtyFilter.trim().toLowerCase();
     return doctors.filter((d) => {
       const name =
         [d.lastName, d.firstName, d.middleName].filter(Boolean).join(" ") ||
         "";
-      const matchesSearch = name.toLowerCase().includes(searchLower);
+      const searchableFields = [
+        name,
+        d.specialty,
+        d.position,
+        d.department,
+      ].map((field) => field.toLowerCase());
+      const matchesSearch = searchTerms.every((term) =>
+        searchableFields.some((field) => field.includes(term)),
+      );
       const matchesSpecialty =
         !specialty || d.specialty.trim().toLowerCase() === specialty;
       return matchesSearch && matchesSpecialty;

@@ -31,7 +31,8 @@ export default function LKPage() {
         <table>
           <thead>
             <tr>
-              <th>Дата и время</th>
+              <th>Дата</th>
+              <th>Время</th>
               <th>Врач</th>
               <th>Услуга</th>
               <th>Тип</th>
@@ -41,7 +42,13 @@ export default function LKPage() {
           <tbody>
             {appointments.map((a) => (
               <tr key={a.id}>
-                <td>{new Date(a.scheduledAt).toLocaleString("ru-RU")}</td>
+                <td>{new Date(a.scheduledAt).toLocaleDateString("ru-RU")}</td>
+                <td>
+                  {new Date(a.scheduledAt).toLocaleTimeString("ru-RU", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
                 <td>{a.staff.fullName}</td>
                 <td>{a.service?.name ?? "—"}</td>
                 <td>{a.type === "PAID" ? "Платно" : "ОМС"}</td>
