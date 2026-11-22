@@ -17,12 +17,14 @@ export default function AppointmentForm() {
   const [availableDates, setAvailableDates] = useState<AvailableDate[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<DoctorSlot | null>(null);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
   const [specialties, setSpecialties] = useState<{ id: number; name: string }[]>(
     [],
   );
-  const [loading, setLoading] = useState(false);
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -65,12 +67,32 @@ export default function AppointmentForm() {
               : "Не удалось загрузить врачей и специальности",
           );
         }
+      } finally {
+        if (!cancelled) {
+          setDoctorsLoading(false);
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!scheduleOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setScheduleOpen(false);
+        setSelectedSlot(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [scheduleOpen]);
 
   const filteredDoctors = useMemo(() => {
     const searchLower = search.trim().toLowerCase();
@@ -91,10 +113,11 @@ export default function AppointmentForm() {
     setSelectedSlot(null);
     setSelectedDate("");
     setAvailableDates([]);
+    setScheduleOpen(true);
     loadRequestId.current += 1;
     const myRequestId = loadRequestId.current;
     try {
-      setLoading(true);
+      setScheduleLoading(true);
       setError("");
       const today = new Date();
       const dates: AvailableDate[] = [];
@@ -128,7 +151,7 @@ export default function AppointmentForm() {
       }
     } finally {
       if (myRequestId === loadRequestId.current) {
-        setLoading(false);
+        setScheduleLoading(false);
       }
     }
   };
@@ -140,6 +163,11 @@ export default function AppointmentForm() {
 
   const handleSelectSlot = (slot: DoctorSlot) => {
     setSelectedSlot(slot);
+  };
+
+  const handleCloseSchedule = () => {
+    setScheduleOpen(false);
+    setSelectedSlot(null);
   };
 
   const formatSlotTime = (iso: string) => {
@@ -199,6 +227,7 @@ export default function AppointmentForm() {
         comment: "",
       });
       setSelectedSlot(null);
+      setScheduleOpen(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ошибка записи на приём");
     } finally {
@@ -230,25 +259,38 @@ export default function AppointmentForm() {
       {message && <div className="appointment-message">{message}</div>}
 
       <div className="appointment-layout">
-        {/* Колонка 1: Выбор врача с фильтрами */}
         <div className="col-doctors">
-          <h3>1. Выберите врача</h3>
+          <h3>Выберите врача</h3>
 
           <div className="filters">
-            <label>
-              Поиск:
+            <label className="search-filter">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="ФИО, должность, отделение"
+                aria-label="Поиск по ФИО, должности или отделению"
               />
             </label>
             <label>
-              Специальность:
               <select
                 value={specialtyFilter}
                 onChange={(e) => setSpecialtyFilter(e.target.value)}
+                aria-label="Специальность"
               >
                 <option value="">Все специальности</option>
                 {specialties.map((s) => (
@@ -260,7 +302,7 @@ export default function AppointmentForm() {
             </label>
           </div>
 
-          {loading ? (
+          {doctorsLoading ? (
             <p>Загрузка врачей…</p>
           ) : filteredDoctors.length === 0 ? (
             <p className="no-results">Врачей не найдено по заданным фильтрам.</p>
@@ -287,156 +329,171 @@ export default function AppointmentForm() {
           )}
         </div>
 
-        {/* Колонка 2: Расписание врача */}
-        <div className="col-schedule">
-          {selectedDoctor ? (
-            <>
-              <h3>
-                2. Расписание {doctorFullName(selectedDoctor)}
-              </h3>
-              <p className="doctor-hint">
-                {selectedDoctor.position} · {selectedDoctor.specialty}
-              </p>
+      </div>
 
-              {loading ? (
-                <p>Загрузка расписания…</p>
-              ) : availableDates.length === 0 ? (
-                <p className="no-results">
-                  Нет свободного времени на ближайшие 30 дней.
+      {scheduleOpen && selectedDoctor && (
+        <div
+          className="schedule-modal-backdrop"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              handleCloseSchedule();
+            }
+          }}
+        >
+          <section
+            className="schedule-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="schedule-modal-title"
+          >
+            <button
+              type="button"
+              className="schedule-modal-close"
+              onClick={handleCloseSchedule}
+              aria-label="Закрыть окно записи"
+            >
+              ×
+            </button>
+            <h3 id="schedule-modal-title">
+              {selectedSlot
+                ? "Данные пациента"
+                : `Расписание ${doctorFullName(selectedDoctor)}`}
+            </h3>
+
+            {selectedSlot ? (
+              <form onSubmit={handleSubmit}>
+                <p className="appointment-summary">
+                  <strong>Врач:</strong> {doctorFullName(selectedDoctor)}<br />
+                  <strong>Время:</strong>
+                  {formatDateRu(selectedSlot.start)} в{" "}
+                  {formatSlotTime(selectedSlot.start)}
                 </p>
-              ) : (
-                <div className="schedule-grid">
-                  {availableDates.map((day) => (
-                    <div key={day.date} className="date-block">
-                      <div className="date-header">
-                        <button
-                          type="button"
-                          onClick={() => handleSelectDate(day.date)}
-                          className={`date-btn ${
-                            selectedDate === day.date ? "selected" : ""
-                          }`}
-                        >
-                          {formatDateRu(day.date)}
-                        </button>
-                      </div>
-                      <div className="slots-row">
-                        {day.slots.map((slot) => (
+
+                <label>
+                  ФИО пациента:*
+                  <input
+                    type="text"
+                    value={form.patientName}
+                    onChange={(e) =>
+                      setForm({ ...form, patientName: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Телефон:*
+                  <input
+                    type="tel"
+                    value={form.patientPhone}
+                    onChange={(e) =>
+                      setForm({ ...form, patientPhone: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Дата рождения:*
+                  <input
+                    type="date"
+                    value={form.birthDate}
+                    onChange={(e) =>
+                      setForm({ ...form, birthDate: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Email:
+                  <input
+                    type="email"
+                    value={form.patientEmail}
+                    onChange={(e) =>
+                      setForm({ ...form, patientEmail: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  Тип записи:
+                  <select
+                    value={form.type}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        type: e.target.value as "OMS" | "PAID",
+                      })
+                    }
+                  >
+                    <option value="OMS">По ОМС</option>
+                    <option value="PAID">Платно</option>
+                  </select>
+                </label>
+                <label>
+                  Комментарий:
+                  <textarea
+                    value={form.comment}
+                    onChange={(e) =>
+                      setForm({ ...form, comment: e.target.value })
+                    }
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="appointment-back-button"
+                  onClick={() => setSelectedSlot(null)}
+                >
+                  Выбрать другое время
+                </button>
+                <button type="submit" disabled={submitting}>
+                  {submitting ? "Оформление…" : "Записаться"}
+                </button>
+              </form>
+            ) : (
+              <>
+                <p className="doctor-hint">
+                  {selectedDoctor.position} · {selectedDoctor.specialty}
+                </p>
+                {scheduleLoading ? (
+                  <p>Загрузка расписания…</p>
+                ) : availableDates.length === 0 ? (
+                  <p className="no-results">
+                    Нет свободного времени на ближайшие 30 дней.
+                  </p>
+                ) : (
+                  <div className="schedule-grid">
+                    {availableDates.map((day) => (
+                      <div key={day.date} className="date-block">
+                        <div className="date-header">
                           <button
-                            key={slot.start}
                             type="button"
-                            onClick={() => handleSelectSlot(slot)}
-                            className={`slot-btn ${
-                              selectedSlot?.start === slot.start
-                                ? "selected"
-                                : ""
+                            onClick={() => handleSelectDate(day.date)}
+                            className={`date-btn ${
+                              selectedDate === day.date ? "selected" : ""
                             }`}
                           >
-                            {formatSlotTime(slot.start)}
+                            {formatDateRu(day.date)}
                           </button>
-                        ))}
+                        </div>
+                        <div className="slots-row">
+                          {day.slots.map((slot) => (
+                            <button
+                              key={slot.start}
+                              type="button"
+                              onClick={() => handleSelectSlot(slot)}
+                              className="slot-btn"
+                            >
+                              {formatSlotTime(slot.start)}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="empty-state">
-              <p>Выберите врача в левой колонке, чтобы посмотреть расписание.</p>
-            </div>
-          )}
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </section>
         </div>
-
-        {/* Колонка 3: Форма записи */}
-        <div className="col-form">
-          {!selectedSlot ? (
-            <div className="empty-state">
-              <p>Выберите дату и время в средней колонке.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <h3>3. Данные пациента</h3>
-              <p className="appointment-summary">
-                <strong>Врач:</strong> {doctorFullName(selectedDoctor)}<br />
-                <strong>Время:</strong>
-                {formatDateRu(selectedSlot.start)} в{" "}
-                {formatSlotTime(selectedSlot.start)}
-              </p>
-
-              <label>
-                ФИО пациента:*
-                <input
-                  type="text"
-                  value={form.patientName}
-                  onChange={(e) =>
-                    setForm({ ...form, patientName: e.target.value })
-                  }
-                  required
-                />
-              </label>
-              <label>
-                Телефон:*
-                <input
-                  type="tel"
-                  value={form.patientPhone}
-                  onChange={(e) =>
-                    setForm({ ...form, patientPhone: e.target.value })
-                  }
-                  required
-                />
-              </label>
-              <label>
-                Дата рождения:*
-                <input
-                  type="date"
-                  value={form.birthDate}
-                  onChange={(e) =>
-                    setForm({ ...form, birthDate: e.target.value })
-                  }
-                  required
-                />
-              </label>
-              <label>
-                Email:
-                <input
-                  type="email"
-                  value={form.patientEmail}
-                  onChange={(e) =>
-                    setForm({ ...form, patientEmail: e.target.value })
-                  }
-                />
-              </label>
-              <label>
-                Тип записи:
-                <select
-                  value={form.type}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      type: e.target.value as "OMS" | "PAID",
-                    })
-                  }
-                >
-                  <option value="OMS">По ОМС</option>
-                  <option value="PAID">Платно</option>
-                </select>
-              </label>
-              <label>
-                Комментарий:
-                <textarea
-                  value={form.comment}
-                  onChange={(e) =>
-                    setForm({ ...form, comment: e.target.value })
-                  }
-                />
-              </label>
-              <button type="submit" disabled={submitting}>
-                {submitting ? "Оформление…" : "Записаться"}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+      )}
     </section>
   );
 }
