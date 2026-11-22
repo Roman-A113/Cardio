@@ -7,13 +7,13 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header-top">
         <div className="header-left">
-          <div className="logo-section">
+          <Link to="/" className="logo-section" aria-label="На главную">
             <img
               src="/logo.png"
               alt="Уральский институт кардиологии"
               className="logo"
             />
-          </div>
+          </Link>
 
           <div className="info-block">
             <div className="contacts-block">
