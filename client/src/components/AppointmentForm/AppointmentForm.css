@@ -6,8 +6,9 @@
 }
 
 .appointment-form h2 {
+  width: min(100%, 860px);
+  margin: 12px auto 1.5rem;
   font-size: 1.75rem;
-  margin-bottom: 1.5rem;
   text-align: left;
 }
 
