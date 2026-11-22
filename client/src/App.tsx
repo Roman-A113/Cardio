@@ -12,6 +12,9 @@ import LKPage from "./components/LKPage/LKPage.tsx";
 import PageTemplate from "./components/PageTemplate/PageTemplate.tsx";
 import SpecialistsPage from "./components/Specialists/SpecialistsPage.tsx";
 import HistoryPage from "./components/menuPages/HistoryPage/HistoryPage.tsx";
+import MissionPage from "./components/menuPages/MissionPage/MissionPage.tsx";
+import ControllingAuthoritiesPage from "./components/menuPages/ControllingAuthoritiesPage/ControllingAuthoritiesPage.tsx";
+import VacanciesPage from "./components/menuPages/VacanciesPage/VacanciesPage.tsx";
 
 const App: React.FC = () => {
   return (
@@ -30,6 +33,12 @@ const App: React.FC = () => {
             }
           />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/missiya" element={<MissionPage />} />
+          <Route
+            path="/kontroliruyushchie-organy"
+            element={<ControllingAuthoritiesPage />}
+          />
+          <Route path="/vakansii" element={<VacanciesPage />} />
           <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/appointment" element={<AppointmentForm />} />
           <Route path="/lk" element={<LKPage />} />

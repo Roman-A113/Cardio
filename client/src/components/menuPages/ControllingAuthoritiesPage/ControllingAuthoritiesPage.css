@@ -1,0 +1,126 @@
+.authorities-page {
+  min-height: 60vh;
+  padding: 48px 24px 64px;
+  background: #fff;
+}
+
+.authorities-page__content {
+  width: min(100%, 1200px);
+  margin: 0 auto;
+}
+
+.authorities-page h1 {
+  margin-bottom: 36px;
+  color: #333;
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.authorities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+}
+
+.authority-card {
+  padding: 26px 28px;
+  border: 1px solid #e1e5e9;
+  border-left: 5px solid var(--color-coral);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
+}
+
+.authority-card h2 {
+  margin-bottom: 14px;
+  color: #333;
+  font-size: 21px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.authority-card__leader {
+  margin-bottom: 14px;
+  color: #4b4b4b;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.authority-card__address {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(166, 157, 205, 0.1);
+  color: #4b4b4b;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.authority-card__contacts {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.authority-contact {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.authority-contact__label {
+  color: #666;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.authority-contact a {
+  width: fit-content;
+  color: var(--color-coral);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.authority-contact a:hover {
+  color: var(--color-coral-hover);
+  text-decoration: underline;
+}
+
+.authority-contact__note {
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.authority-card--hotlines {
+  grid-column: 1 / -1;
+  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
+}
+
+@media (max-width: 760px) {
+  .authorities-page {
+    padding: 32px 16px 48px;
+  }
+
+  .authorities-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .authority-card--hotlines {
+    grid-column: auto;
+  }
+
+  .authority-card {
+    padding: 22px 18px;
+  }
+
+  .authority-card h2 {
+    font-size: 19px;
+  }
+}
