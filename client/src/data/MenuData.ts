@@ -45,6 +45,14 @@ export const menuData: MenuItem[] = [
       "Специалисты",
     ],
     paths: {
+      "Правила записи на прием": "/pravila-zapisi-na-priem",
+      "Госпитализация от А до Я": "/gospitalizatsiya-ot-a-do-ya",
+      Услуги: "/uslugi",
+      "Виды медицинской помощи": "/vidy-meditsinskoy-pomoshchi",
+      "Правила и график посещения": "/pravila-i-grafik-poseshcheniya",
+      "Информация о страховых организациях":
+        "/informatsiya-o-strakhovykh-organizatsiyakh",
+      "Медицинский туризм": "/meditsinskiy-turizm",
       Специалисты: "/specialists",
     },
   },

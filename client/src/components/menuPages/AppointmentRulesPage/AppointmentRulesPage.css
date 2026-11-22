@@ -1,0 +1,175 @@
+.appointment-rules-page {
+  min-height: 60vh;
+  padding: 48px 24px 64px;
+  background: #fff;
+}
+
+.appointment-rules-page__content {
+  width: min(100%, 1200px);
+  margin: 0 auto;
+}
+
+.appointment-rules-page h1 {
+  margin-bottom: 36px;
+  color: #333;
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.appointment-rules-card {
+  border: 1px solid #e1e5e9;
+  border-left: 5px solid var(--color-coral);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
+}
+
+.appointment-rules-card p,
+.appointment-rules-card li {
+  color: #4b4b4b;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.appointment-rules-card--intro {
+  padding: 24px 32px;
+  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
+}
+
+.appointment-rules-steps {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.appointment-rules-step {
+  padding: 28px 32px;
+}
+
+.appointment-rules-step__header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.appointment-rules-step__number {
+  flex-shrink: 0;
+  color: #d32f2f;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.appointment-rules-page h2 {
+  color: #333;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.appointment-rules-step__header h2 {
+  font-size: 22px;
+}
+
+.appointment-rules-documents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.appointment-rules-documents__group {
+  padding: 20px 22px;
+  border: 1px solid #edf0f2;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.appointment-rules-documents h3 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.appointment-rules-documents ul,
+.appointment-rules-files ul {
+  padding-left: 22px;
+}
+
+.appointment-rules-step__note {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: #fceaea;
+  color: #8f1717 !important;
+  font-weight: 600;
+}
+
+.appointment-rules-paid,
+.appointment-rules-files {
+  margin-top: 24px;
+  padding: 26px 32px;
+}
+
+.appointment-rules-paid h2,
+.appointment-rules-files h2 {
+  margin-bottom: 12px;
+}
+
+.appointment-rules-paid a,
+.appointment-rules-files a {
+  color: #b52e37;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.appointment-rules-paid a:hover,
+.appointment-rules-files a:hover {
+  color: #842129;
+}
+
+.appointment-rules-files li + li {
+  margin-top: 10px;
+}
+
+@media (max-width: 760px) {
+  .appointment-rules-documents {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .appointment-rules-page {
+    padding: 32px 16px 48px;
+  }
+
+  .appointment-rules-page h1 {
+    margin-bottom: 24px;
+  }
+
+  .appointment-rules-card--intro,
+  .appointment-rules-step,
+  .appointment-rules-paid,
+  .appointment-rules-files {
+    padding: 22px 18px;
+  }
+
+  .appointment-rules-step__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .appointment-rules-page h2,
+  .appointment-rules-step__header h2 {
+    font-size: 21px;
+  }
+
+  .appointment-rules-documents__group {
+    padding: 18px 16px;
+  }
+}

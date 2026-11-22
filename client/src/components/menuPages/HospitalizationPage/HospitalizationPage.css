@@ -1,0 +1,103 @@
+.hospitalization-page {
+  min-height: 60vh;
+  padding: 48px 24px 64px;
+  background: #fff;
+}
+
+.hospitalization-page__content {
+  display: grid;
+  width: min(100%, 1200px);
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.hospitalization-page h1 {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.hospitalization-card {
+  padding: 28px 32px;
+  border: 1px solid #e1e5e9;
+  border-left: 5px solid var(--color-coral);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
+}
+
+.hospitalization-card--emergency {
+  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
+}
+
+.hospitalization-card__header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.hospitalization-card__label {
+  flex-shrink: 0;
+  color: #d32f2f;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hospitalization-page h2 {
+  color: #333;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.hospitalization-card p,
+.hospitalization-card li {
+  color: #4b4b4b;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.hospitalization-card ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-left: 24px;
+}
+
+.hospitalization-card__note {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: #fceaea;
+  color: #8f1717 !important;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .hospitalization-page {
+    padding: 32px 16px 48px;
+  }
+
+  .hospitalization-page h1 {
+    margin-bottom: 0;
+  }
+
+  .hospitalization-card {
+    padding: 22px 18px;
+  }
+
+  .hospitalization-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .hospitalization-page h2 {
+    font-size: 21px;
+  }
+}

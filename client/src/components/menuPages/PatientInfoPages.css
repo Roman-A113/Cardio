@@ -1,0 +1,115 @@
+.patient-info-page {
+  min-height: 60vh;
+  padding: 48px 24px 64px;
+  background: #fff;
+}
+
+.patient-info-page__content {
+  display: grid;
+  width: min(100%, 1200px);
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.patient-info-page h1 {
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.patient-info-card {
+  padding: 28px 32px;
+  border: 1px solid #e1e5e9;
+  border-left: 5px solid var(--color-coral);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
+}
+
+.patient-info-card--featured {
+  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
+}
+
+.patient-info-card h2 {
+  margin-bottom: 14px;
+  color: #333;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.patient-info-card p,
+.patient-info-card li {
+  color: #4b4b4b;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.patient-info-card ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-left: 24px;
+}
+
+.patient-info-note {
+  padding: 16px 20px;
+  border: 1px solid #f1c6c8;
+  border-radius: 8px;
+  background: #fff5f5;
+  color: #71343a;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.patient-info-link {
+  color: #b52e37;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.patient-info-link:hover {
+  color: #842129;
+}
+
+.medical-tourism-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.medical-tourism-card__language {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #d32f2f;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .medical-tourism-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .patient-info-page {
+    padding: 32px 16px 48px;
+  }
+
+  .patient-info-card {
+    padding: 22px 18px;
+  }
+
+  .patient-info-page h1 {
+    font-size: 29px;
+  }
+
+  .patient-info-card h2 {
+    font-size: 21px;
+  }
+}
