@@ -100,7 +100,7 @@ const HistoryPage: React.FC = () => {
             </p>
           </article>
 
-          <article className="history-period history-period--current">
+          <article className="history-period">
             <header className="history-period__header">
               <span className="history-period__years">с 2025 года</span>
               <h2>Наше время</h2>
