@@ -54,8 +54,5 @@ export const getPageTitle = (slug: string): string => {
     ...menuItem.links,
   ]);
 
-  return (
-    menuTitles.find((title) => createPageSlug(title) === slug) ??
-    "Страница не найдена"
-  );
+  return menuTitles.find((title) => createPageSlug(title) === slug) ?? "";
 };

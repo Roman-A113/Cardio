@@ -11,11 +11,11 @@ const MainNav: React.FC = () => {
         {menuData.map((menuItem) => (
           <li key={menuItem.title} className="nav-item">
             {menuItem.links.length > 0 ? (
-              <Link to={createPagePath(menuItem.title)}>
+              <Link to={menuItem.path ?? createPagePath(menuItem.title)}>
                 {menuItem.title}
               </Link>
             ) : (
-              <Link to={createPagePath(menuItem.title)}>
+              <Link to={menuItem.path ?? createPagePath(menuItem.title)}>
                 {menuItem.title}
               </Link>
             )}
@@ -23,11 +23,9 @@ const MainNav: React.FC = () => {
               <ul className="dropdown">
                 {menuItem.links.map((link, index) => (
                   <li key={index}>
-                    {link === "Специалисты" ? (
-                      <Link to="/specialists">{link}</Link>
-                    ) : (
-                      <Link to={createPagePath(link)}>{link}</Link>
-                    )}
+                    <Link to={menuItem.paths?.[link] ?? createPagePath(link)}>
+                      {link}
+                    </Link>
                   </li>
                 ))}
               </ul>

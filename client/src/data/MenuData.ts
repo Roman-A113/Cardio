@@ -1,11 +1,14 @@
 export interface MenuItem {
   title: string;
+  path?: string;
   links: string[];
+  paths?: Record<string, string>;
 }
 
 export const menuData: MenuItem[] = [
   {
     title: "Об институте",
+    path: "/ob-institute",
     links: [
       "История",
       "Миссия",
@@ -17,6 +20,10 @@ export const menuData: MenuItem[] = [
       "Терроризм",
       "Вакансии",
     ],
+    paths: {
+      История: "/history",
+      Специалисты: "/specialists",
+    },
   },
   {
     title: "Пациентам",
@@ -34,6 +41,9 @@ export const menuData: MenuItem[] = [
       "Медицинский туризм",
       "Специалисты",
     ],
+    paths: {
+      Специалисты: "/specialists",
+    },
   },
   {
     title: "Платные услуги",
@@ -46,6 +56,10 @@ export const menuData: MenuItem[] = [
       "Документы",
       "ДМС",
     ],
+    paths: {
+      "Запись на прием": "/appointment",
+      Специалисты: "/specialists",
+    },
   },
   {
     title: "Пресс-центр",
