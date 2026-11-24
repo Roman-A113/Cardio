@@ -6,7 +6,7 @@ const AppointmentRulesPage: React.FC = () => {
       <div className="appointment-rules-page__content">
         <h1>Правила записи на прием</h1>
 
-        <article className="appointment-rules-card appointment-rules-card--intro">
+        <article className="appointment-rules-card">
           <p>
             Мы оказываем бесплатную медицинскую помощь всем жителям Свердловской
             области по направлению, а также предоставляем платные услуги.
@@ -43,7 +43,7 @@ const AppointmentRulesPage: React.FC = () => {
             <div className="appointment-rules-documents">
               <section className="appointment-rules-documents__group">
                 <h3>Документы</h3>
-                <ul>
+                <ul className="docs-list">
                   <li>паспорт;</li>
                   <li>полис обязательного медицинского страхования (ОМС);</li>
                   <li>СНИЛС.</li>

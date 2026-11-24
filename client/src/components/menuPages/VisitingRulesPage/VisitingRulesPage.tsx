@@ -6,7 +6,7 @@ const VisitingRulesPage: React.FC = () => {
       <div className="patient-info-page__content">
         <h1>Правила и график посещения</h1>
 
-        <article className="patient-info-card patient-info-card--featured">
+        <article className="patient-info-card">
           <h2>Информация для посетителей</h2>
           <p>
             В этом разделе будут опубликованы правила посещения пациентов и

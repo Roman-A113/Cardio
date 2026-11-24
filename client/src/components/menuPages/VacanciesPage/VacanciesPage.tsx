@@ -6,7 +6,7 @@ const VacanciesPage: React.FC = () => {
       <div className="vacancies-page__content">
         <h1>Вакансии</h1>
 
-        <article className="vacancies-card vacancies-card--intro">
+        <article className="vacancies-card">
           <p>
             ГБУЗ СО «Уральский институт кардиологии» — ведущее
             специализированное медицинское и научное учреждение по профилю

@@ -27,10 +27,6 @@
   box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
 }
 
-.patient-info-card--featured {
-  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
-}
-
 .patient-info-card h2 {
   margin-bottom: 14px;
   color: #333;

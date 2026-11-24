@@ -6,7 +6,7 @@ const MedicalCareTypesPage: React.FC = () => {
       <div className="patient-info-page__content">
         <h1>Виды медицинской помощи</h1>
 
-        <article className="patient-info-card patient-info-card--featured">
+        <article className="patient-info-card">
           <p>
             В ГБУЗ СО «Уральский институт кардиологии» оказывается
             специализированная, в том числе высокотехнологичная медицинская

@@ -40,10 +40,6 @@
   box-shadow: 0 12px 28px rgba(51, 51, 51, 0.1);
 }
 
-.mission-card--featured {
-  grid-column: 1 / -1;
-  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
-}
 
 .mission-card h2 {
   margin-bottom: 14px;
@@ -66,10 +62,6 @@
   .mission-grid {
     grid-template-columns: 1fr;
     gap: 16px;
-  }
-
-  .mission-card--featured {
-    grid-column: auto;
   }
 
   .mission-card {

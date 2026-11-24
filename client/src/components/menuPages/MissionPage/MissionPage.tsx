@@ -7,7 +7,7 @@ const MissionPage: React.FC = () => {
         <h1>Миссия</h1>
 
         <div className="mission-grid">
-          <article className="mission-card mission-card--featured">
+          <article className="mission-card">
             <h2>Лечить сердца</h2>
             <p>
               Это наше призвание с 1976 года, когда открылся кардиоцентр. Мы

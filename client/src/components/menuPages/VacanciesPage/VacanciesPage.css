@@ -24,12 +24,9 @@
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 8px 24px rgba(51, 51, 51, 0.06);
+  padding: 24px 32px;
 }
 
-.vacancies-card--intro {
-  padding: 28px 32px;
-  background: linear-gradient(110deg, #fff 60%, rgba(240, 105, 115, 0.08));
-}
 
 .vacancies-card p,
 .vacancies-openings p,
@@ -145,7 +142,6 @@
     margin-bottom: 24px;
   }
 
-  .vacancies-card--intro,
   .vacancies-openings,
   .vacancies-response {
     padding: 22px 18px;

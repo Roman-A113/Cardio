@@ -6,7 +6,7 @@ const InsuranceOrganizationsPage: React.FC = () => {
       <div className="patient-info-page__content">
         <h1>Информация о страховых организациях</h1>
 
-        <article className="patient-info-card patient-info-card--featured">
+        <article className="patient-info-card">
           <p>
             Ознакомиться с актуальным списком страховых организаций вы можете на
             сайте ТФОМС:
