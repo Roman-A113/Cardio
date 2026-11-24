@@ -24,8 +24,8 @@ interface StaffQuery {
 }
 
 interface CreateAppointmentBody {
-  staffId : number;
-  scheduledAt : string;
+  staffId: number;
+  scheduledAt: string;
   type?: "OMS" | "PAID";
   source?: "SITE" | "PHONE";
   comment?: string;
@@ -36,7 +36,7 @@ interface CreateAppointmentBody {
 }
 
 interface AppointmentQuery {
-  staffId : string;
+  staffId: string;
   date?: string; // YYYY-MM-DD
   status?: string;
   userId?: string;
@@ -166,226 +166,252 @@ app.get<{ Querystring: { staffType?: string } }>(
   },
 );
 
-// GET /api/appointments
-app.get<{ Querystring : AppointmentQuery }>(
-    "/api/appointments",
-    async (request, reply) => {
-      const {staffId, date, status, userId} = request.query;
-      const where: Record<string, unknown> = {};
+app.get<{ Querystring: AppointmentQuery }>(
+  "/api/appointments",
+  async (request, reply) => {
+    const { staffId, date, status, userId } = request.query;
+    const where: Record<string, unknown> = {};
 
-      if (staffId) {
-        const parsed = Number(staffId);
-        if (!Number.isSafeInteger(parsed) || parsed < 1) {
-          return reply.code(400).send({ message : "Invalid staffId" });
-        }
-        where.staffId = parsed;
+    if (staffId) {
+      const parsed = Number(staffId);
+      if (!Number.isSafeInteger(parsed) || parsed < 1) {
+        return reply.code(400).send({ message: "Invalid staffId" });
       }
-
-      if (date) {
-        const dayStart = new Date(`${date}T00:00:00`);
-        const dayEnd = new Date(`${date}T23:59:59`);
-        where.scheduledAt = {gte : dayStart, lte : dayEnd};
-      }
-
-      if (status) {
-        where.status = status;
-      }
-
-      if (userId) {
-        where.userId = userId;
-      }
-
-      const appointments = await prisma.appointment.findMany({
-        where,
-        include: {
-          staff: {
-            select: {
-              id : true,
-              firstName : true,
-              lastName : true,
-              middleName : true,
-              position : true,
-              specialty : {select: {name : true}}
-            },
-          },
-          service: {
-            select: {id : true, name : true, price : true, isPaid : true},
-          },
-        },
-        orderBy : { scheduledAt: "asc"},
-      });
-
-      return appointments.map((appointment) => ({
-        id: appointment.id,
-        scheduledAt: appointment.scheduledAt,
-        durationMinutes: appointment.durationMinutes,
-        type: appointment.type,
-        status: appointment.status,
-        source: appointment.source,
-        comment: appointment.comment,
-        patientName: appointment.patientName,
-        patientPhone: appointment.patientPhone,
-        patientEmail: appointment.patientEmail,
-        staff: {
-          id : String(appointment.staff.id),
-          fullName : [appointment.staff.lastName, appointment.staff.firstName, appointment.staff.middleName]
-              .filter(Boolean)
-              .join(" "),
-          position : appointment.staff.position,
-          specialty: appointment.staff.specialty?.name ?? "",
-        },
-        service: appointment.service
-        ? {
-              id : appointment.service.id,
-              name: appointment.service.name,
-              price: appointment.service.price,
-              isPaid: appointment.service.isPaid,
-            }
-            : null,
-      }));
+      where.staffId = parsed;
     }
-);
 
-app.post<{Body : CreateAppointmentBody}>(
-    "/api/appointments",
-    async (request, reply) => {
-      const { staffId, scheduledAt, type, source, comment, patientName,
-        patientPhone, patientEmail, serviceId} = request.body;
-
-      const parsedStaffId = Number(staffId);
-      if (!Number.isSafeInteger(parsedStaffId) || parsedStaffId < 1) {
-        return reply.code(400).send({ message : "Invalid staffId"});
-      }
-
-      const appointmentDate = new Date(scheduledAt);
-      if (Number.isNaN(appointmentDate.getTime())) {
-        return reply.code(400).send({ message : "Invalid scheduledAt"});
-      }
-
-      const staff = await prisma.medicalStaff.findUnique({
-        where : {id : parsedStaffId},
-      });
-      if (!staff) {
-        return reply.code(404).send({ message: "Doctor not found" });
-      }
-
-      const existing = await prisma.appointment.findFirst({
-        where: {
-          staffId: parsedStaffId,
-          scheduledAt: appointmentDate,
-        },
-      });
-      if (existing) {
-        return reply.code(409).send({ message : "Slot already booked"});
-      }
-
-      if (!patientName || !patientPhone) {
-          return reply.code(400).send({ message: "patientName and patientPhone are required"});
-      }
-
-      const appointment = await prisma.appointment.create({
-        data: {
-          staffId: parsedStaffId,
-          scheduledAt: appointmentDate,
-          type: type ?? "OMS",
-          source: source ?? "SITE",
-          comment: comment ?? null,
-          patientName : patientName ?? "",
-          patientPhone : patientPhone ?? "",
-          patientEmail: patientEmail ?? null,
-          serviceId : serviceId ?? null,
-          userId: null,
-        },
-        include: {
-          staff: { select: { id : true, firstName: true, lastName : true, specialty : {select: {name : true}} } },
-          service : { select : { id: true, name : true, price : true, isPaid : true } },
-        },
-      });
-
-      return reply.code(201).send({
-        id : appointment.id,
-        scheduledAt : appointment.scheduledAt,
-        status: appointment.status,
-        type: appointment.type,
-        staff: {
-          id: String(appointment.staff.id),
-          fullName: `${appointment.staff.lastName} ${appointment.staff.firstName}`,
-          specialty: appointment.staff.specialty?.name ?? "",
-        },
-        service : appointment.service
-        ? { id : appointment.service.id, name : appointment.service.name, isPaid: appointment.service.isPaid}
-            : null,
-      });
-    },
-);
-
-// GET /api/doctors/:id/slots - свободные слоты врача на дату
-app.get<{ Params : {id : string}; Querystring : {date : string}}>(
-    "/api/doctors/:id/slots",
-    async (request, reply) => {
-      const staffId = Number(request.params.id);
-      const {date} = request.query;
-
-      if (!Number.isSafeInteger(staffId) || staffId < 1) {
-        return reply.code(400).send({ message: "Invalid doctor id" });
-      }
-
-      if (!date) {
-        return reply.code(400).send({ message: "date is required (YYYY-MM-DD)" });
-      }
-
+    if (date) {
       const dayStart = new Date(`${date}T00:00:00`);
       const dayEnd = new Date(`${date}T23:59:59`);
+      where.scheduledAt = { gte: dayStart, lte: dayEnd };
+    }
 
-      const weekday = dayStart.getDay();
-      const schedules = await prisma.doctorSchedule.findMany({
-        where: { staffId, weekday},
-      });
+    if (status) {
+      where.status = status;
+    }
 
-      if (schedules.length === 0) {
-        return reply.code(404).send({ message: "No schedule for this day" });
-      }
+    if (userId) {
+      where.userId = userId;
+    }
 
-      const busy = await prisma.appointment.findMany({
-        where: {
-          staffId,
-          scheduledAt : {gte: dayStart, lte: dayEnd},
-          status: { not : "CANCELLED"},
+    const appointments = await prisma.appointment.findMany({
+      where,
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            middleName: true,
+            position: true,
+            specialty: { select: { name: true } },
+          },
         },
-        select: {scheduledAt : true, durationMinutes : true},
-      });
+        service: {
+          select: { id: true, name: true, price: true, isPaid: true },
+        },
+      },
+      orderBy: { scheduledAt: "asc" },
+    });
 
-      const busySet = new Set(busy.map((a) => a.scheduledAt.getTime()));
+    return appointments.map((appointment) => ({
+      id: appointment.id,
+      scheduledAt: appointment.scheduledAt,
+      durationMinutes: appointment.durationMinutes,
+      type: appointment.type,
+      status: appointment.status,
+      source: appointment.source,
+      comment: appointment.comment,
+      patientName: appointment.patientName,
+      patientPhone: appointment.patientPhone,
+      patientEmail: appointment.patientEmail,
+      staff: {
+        id: String(appointment.staff.id),
+        fullName: [
+          appointment.staff.lastName,
+          appointment.staff.firstName,
+          appointment.staff.middleName,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        position: appointment.staff.position,
+        specialty: appointment.staff.specialty?.name ?? "",
+      },
+      service: appointment.service
+        ? {
+            id: appointment.service.id,
+            name: appointment.service.name,
+            price: appointment.service.price,
+            isPaid: appointment.service.isPaid,
+          }
+        : null,
+    }));
+  },
+);
 
-      const slots: Array<{ start: string; end : string; available : boolean}> = [];
+app.post<{ Body: CreateAppointmentBody }>(
+  "/api/appointments",
+  async (request, reply) => {
+    const {
+      staffId,
+      scheduledAt,
+      type,
+      source,
+      comment,
+      patientName,
+      patientPhone,
+      patientEmail,
+      serviceId,
+    } = request.body;
 
-      for (const schedule of schedules) {
-        const [sh, sm] = schedule.startTime.split(":").map(Number);
-        const [eh, em] = schedule.endTime.split(":").map(Number);
+    const parsedStaffId = Number(staffId);
+    if (!Number.isSafeInteger(parsedStaffId) || parsedStaffId < 1) {
+      return reply.code(400).send({ message: "Invalid staffId" });
+    }
 
-        let current = new Date(dayStart);
-        current.setHours(sh, sm, 0, 0);
-        const end = new Date(dayStart);
-        end.setHours(eh, em, 0, 0);
+    const appointmentDate = new Date(scheduledAt);
+    if (Number.isNaN(appointmentDate.getTime())) {
+      return reply.code(400).send({ message: "Invalid scheduledAt" });
+    }
 
-        while (current < end) {
-          const slotStart = new Date(current);
-          const slotEnd = new Date(current.getTime() + 15 * 60 * 1000); // 15 мин
-          if (slotEnd > end) break;
+    const staff = await prisma.medicalStaff.findUnique({
+      where: { id: parsedStaffId },
+    });
+    if (!staff) {
+      return reply.code(404).send({ message: "Doctor not found" });
+    }
 
-          const isBusy = busySet.has(slotStart.getTime());
-          slots.push({
-            start: slotStart.toISOString(),
-            end: slotEnd.toISOString(),
-            available: !isBusy,
-          });
+    const existing = await prisma.appointment.findFirst({
+      where: {
+        staffId: parsedStaffId,
+        scheduledAt: appointmentDate,
+      },
+    });
+    if (existing) {
+      return reply.code(409).send({ message: "Slot already booked" });
+    }
 
-          current = slotEnd;
-        }
+    if (!patientName || !patientPhone) {
+      return reply
+        .code(400)
+        .send({ message: "patientName and patientPhone are required" });
+    }
+
+    const appointment = await prisma.appointment.create({
+      data: {
+        staffId: parsedStaffId,
+        scheduledAt: appointmentDate,
+        type: type ?? "OMS",
+        source: source ?? "SITE",
+        comment: comment ?? null,
+        patientName: patientName ?? "",
+        patientPhone: patientPhone ?? "",
+        patientEmail: patientEmail ?? null,
+        serviceId: serviceId ?? null,
+        userId: null,
+      },
+      include: {
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            specialty: { select: { name: true } },
+          },
+        },
+        service: {
+          select: { id: true, name: true, price: true, isPaid: true },
+        },
+      },
+    });
+
+    return reply.code(201).send({
+      id: appointment.id,
+      scheduledAt: appointment.scheduledAt,
+      status: appointment.status,
+      type: appointment.type,
+      staff: {
+        id: String(appointment.staff.id),
+        fullName: `${appointment.staff.lastName} ${appointment.staff.firstName}`,
+        specialty: appointment.staff.specialty?.name ?? "",
+      },
+      service: appointment.service
+        ? {
+            id: appointment.service.id,
+            name: appointment.service.name,
+            isPaid: appointment.service.isPaid,
+          }
+        : null,
+    });
+  },
+);
+
+app.get<{ Params: { id: string }; Querystring: { date: string } }>(
+  "/api/doctors/:id/slots",
+  async (request, reply) => {
+    const staffId = Number(request.params.id);
+    const { date } = request.query;
+
+    if (!Number.isSafeInteger(staffId) || staffId < 1) {
+      return reply.code(400).send({ message: "Invalid doctor id" });
+    }
+
+    if (!date) {
+      return reply.code(400).send({ message: "date is required (YYYY-MM-DD)" });
+    }
+
+    const dayStart = new Date(`${date}T00:00:00`);
+    const dayEnd = new Date(`${date}T23:59:59`);
+
+    const weekday = dayStart.getDay();
+    const schedules = await prisma.doctorSchedule.findMany({
+      where: { staffId, weekday },
+    });
+
+    if (schedules.length === 0) {
+      return reply.code(404).send({ message: "No schedule for this day" });
+    }
+
+    const busy = await prisma.appointment.findMany({
+      where: {
+        staffId,
+        scheduledAt: { gte: dayStart, lte: dayEnd },
+        status: { not: "CANCELLED" },
+      },
+      select: { scheduledAt: true, durationMinutes: true },
+    });
+
+    const busySet = new Set(busy.map((a) => a.scheduledAt.getTime()));
+
+    const slots: Array<{ start: string; end: string; available: boolean }> = [];
+
+    for (const schedule of schedules) {
+      const [sh, sm] = schedule.startTime.split(":").map(Number);
+      const [eh, em] = schedule.endTime.split(":").map(Number);
+
+      let current = new Date(dayStart);
+      current.setHours(sh, sm, 0, 0);
+      const end = new Date(dayStart);
+      end.setHours(eh, em, 0, 0);
+
+      while (current < end) {
+        const slotStart = new Date(current);
+        const slotEnd = new Date(current.getTime() + 15 * 60 * 1000);
+        if (slotEnd > end) break;
+
+        const isBusy = busySet.has(slotStart.getTime());
+        slots.push({
+          start: slotStart.toISOString(),
+          end: slotEnd.toISOString(),
+          available: !isBusy,
+        });
+
+        current = slotEnd;
       }
+    }
 
-      return slots;
-    },
+    return slots;
+  },
 );
 
 const start = async () => {
@@ -407,7 +433,7 @@ const start = async () => {
     const address = app.server.address() as { address: string; port: number };
     app.log.info(`Server running on http://${address.address}:${address.port}`);
   } catch (error) {
-    app.log.error(error);
+    app.log.error({ err: error }, "Error during server startup");
     process.exit(1);
   }
 };

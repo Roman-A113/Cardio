@@ -17,7 +17,10 @@ const MedicalCareTypesPage: React.FC = () => {
           </p>
         </article>
 
-        <section className="patient-info-card" aria-labelledby="care-list-title">
+        <section
+          className="patient-info-card"
+          aria-labelledby="care-list-title"
+        >
           <h2 id="care-list-title">Виды помощи и документы</h2>
           <p className="patient-info-note" role="status">
             Перечень видов медицинской помощи и сопутствующие документы пока не

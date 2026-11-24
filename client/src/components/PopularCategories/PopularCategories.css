@@ -16,7 +16,13 @@
 
 .category-card {
   background:
-    linear-gradient(180deg, #fff 0%, #fff 52%, rgba(240, 105, 115, 0.12) 78%, rgba(240, 105, 115, 0.32) 100%),
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #fff 52%,
+      rgba(240, 105, 115, 0.12) 78%,
+      rgba(240, 105, 115, 0.32) 100%
+    ),
     #fff;
   border-radius: 16px;
   display: flex;

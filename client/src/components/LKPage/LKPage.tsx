@@ -10,7 +10,10 @@ export default function LKPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.getAppointments().then(setAppointments).finally(() => setLoading(false));
+    api
+      .getAppointments()
+      .then(setAppointments)
+      .finally(() => setLoading(false));
   }, []);
 
   const statusLabel: Record<string, string> = {

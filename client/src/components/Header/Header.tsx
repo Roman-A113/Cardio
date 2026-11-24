@@ -116,19 +116,12 @@ const Header: React.FC = () => {
             </svg>
           </button>
           <div className="auth-buttons">
-            <Link
-              to="/appointment"
-              className="btn btn-primary"
-            >
+            <Link to="/appointment" className="btn btn-primary">
               Записаться
             </Link>
-            <Link
-              to="/lk"
-              className="btn btn-outline"
-            >
+            <Link to="/lk" className="btn btn-outline">
               Личный кабинет
             </Link>
-
           </div>
         </div>
       </div>

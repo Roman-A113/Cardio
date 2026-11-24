@@ -27,9 +27,9 @@ export default function AppointmentForm() {
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
-  const [specialties, setSpecialties] = useState<{ id: number; name: string }[]>(
-    [],
-  );
+  const [specialties, setSpecialties] = useState<
+    { id: number; name: string }[]
+  >([]);
   const [doctorsLoading, setDoctorsLoading] = useState(true);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [error, setError] = useState("");
@@ -146,12 +146,15 @@ export default function AppointmentForm() {
   }, [scheduleOpen, selectedSlot]);
 
   const filteredDoctors = useMemo(() => {
-    const searchTerms = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const searchTerms = search
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean);
     const specialty = specialtyFilter.trim().toLowerCase();
     return doctors.filter((d) => {
       const name =
-        [d.lastName, d.firstName, d.middleName].filter(Boolean).join(" ") ||
-        "";
+        [d.lastName, d.firstName, d.middleName].filter(Boolean).join(" ") || "";
       const searchableFields = [
         name,
         d.specialty,
@@ -188,10 +191,7 @@ export default function AppointmentForm() {
         d.setDate(today.getDate() + i);
         const dateStr = d.toISOString().split("T")[0];
         try {
-          const slots = await api.getDoctorSlots(
-            Number(doctor.id),
-            dateStr,
-          );
+          const slots = await api.getDoctorSlots(Number(doctor.id), dateStr);
           const available = slots.filter((s) => s.available);
           if (available.length > 0 && myRequestId === loadRequestId.current) {
             dates.push({ date: dateStr, slots: available });
@@ -293,11 +293,7 @@ export default function AppointmentForm() {
   if (error) {
     return (
       <section className="appointment-form">
-        <h2
-          ref={appointmentTitleRef}
-        >
-          Запись на приём
-        </h2>
+        <h2 ref={appointmentTitleRef}>Запись на приём</h2>
         <div className="appointment-error">{error}</div>
         <button
           type="button"
@@ -364,7 +360,9 @@ export default function AppointmentForm() {
           {doctorsLoading ? (
             <p>Загрузка врачей…</p>
           ) : filteredDoctors.length === 0 ? (
-            <p className="no-results">Врачей не найдено по заданным фильтрам.</p>
+            <p className="no-results">
+              Врачей не найдено по заданным фильтрам.
+            </p>
           ) : (
             <ul className="doctor-list">
               {filteredDoctors.map((doctor) => (
@@ -387,7 +385,6 @@ export default function AppointmentForm() {
             </ul>
           )}
         </div>
-
       </div>
 
       {scheduleOpen && selectedDoctor && (
@@ -438,17 +435,15 @@ export default function AppointmentForm() {
                       {doctorFullName(selectedDoctor)}
                     </p>
                     <p>
-                      <strong>Специальность:</strong>{" "}
-                      {selectedDoctor.specialty}
+                      <strong>Специальность:</strong> {selectedDoctor.specialty}
                     </p>
                     <p>
                       <strong>Штатная должность:</strong>{" "}
                       {selectedDoctor.position}
                     </p>
                     <p>
-                      <strong>Время:</strong>{" "}
-                      {formatDateRu(selectedSlot.start)} в{" "}
-                      {formatSlotTime(selectedSlot.start)}
+                      <strong>Время:</strong> {formatDateRu(selectedSlot.start)}{" "}
+                      в {formatSlotTime(selectedSlot.start)}
                     </p>
                     <p>
                       <strong>Тип записи:</strong> Платно

@@ -19,12 +19,18 @@ const VacanciesPage: React.FC = () => {
           </p>
         </article>
 
-        <section className="vacancies-openings" aria-labelledby="vacancies-openings-title">
+        <section
+          className="vacancies-openings"
+          aria-labelledby="vacancies-openings-title"
+        >
           <h2 id="vacancies-openings-title">Актуальные вакансии</h2>
           <p>Сейчас открытых вакансий нет.</p>
         </section>
 
-        <section className="vacancies-response" aria-labelledby="vacancies-form-title">
+        <section
+          className="vacancies-response"
+          aria-labelledby="vacancies-form-title"
+        >
           <div className="vacancies-response__header">
             <h2 id="vacancies-form-title">Оставить отклик</h2>
             <p>
@@ -33,7 +39,11 @@ const VacanciesPage: React.FC = () => {
             </p>
           </div>
 
-          <p className="vacancies-form-notice" id="vacancies-form-status" role="status">
+          <p
+            className="vacancies-form-notice"
+            id="vacancies-form-status"
+            role="status"
+          >
             Отправка через сайт пока не настроена: адрес кадровиков и почтовый
             сервер не указаны. Заполненные поля и прикреплённое резюме не
             отправляются и не сохраняются.
@@ -63,12 +73,7 @@ const VacanciesPage: React.FC = () => {
 
             <label className="vacancies-form__field">
               <span>Электронная почта</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-              />
+              <input type="email" name="email" autoComplete="email" required />
             </label>
 
             <label className="vacancies-form__field vacancies-form__field--wide">

@@ -8,8 +8,8 @@ const InsuranceOrganizationsPage: React.FC = () => {
 
         <article className="patient-info-card patient-info-card--featured">
           <p>
-            Ознакомиться с актуальным списком страховых организаций вы можете
-            на сайте ТФОМС:
+            Ознакомиться с актуальным списком страховых организаций вы можете на
+            сайте ТФОМС:
           </p>
           <p>
             <a

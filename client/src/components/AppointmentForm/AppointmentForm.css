@@ -403,7 +403,6 @@
   .schedule-modal-backdrop {
     padding: 64px 12px 16px;
   }
-
 }
 
 @media (min-width: 601px) and (max-width: 1020px) {
@@ -420,5 +419,4 @@
   .schedule-modal-backdrop {
     padding-top: 64px;
   }
-
 }

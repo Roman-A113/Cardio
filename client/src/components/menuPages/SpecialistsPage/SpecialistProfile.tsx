@@ -6,7 +6,9 @@ interface SpecialistProfileProps {
   specialist: Specialist;
 }
 
-const SpecialistProfile: React.FC<SpecialistProfileProps> = ({ specialist }) => (
+const SpecialistProfile: React.FC<SpecialistProfileProps> = ({
+  specialist,
+}) => (
   <>
     <div className="specialist-profile">
       <SpecialistPhoto specialist={specialist} size="portrait" />

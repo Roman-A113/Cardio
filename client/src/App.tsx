@@ -10,7 +10,7 @@ import "./styles/variables.css";
 import AppointmentForm from "./components/AppointmentForm/AppointmentForm.tsx";
 import LKPage from "./components/LKPage/LKPage.tsx";
 import PageTemplate from "./components/PageTemplate/PageTemplate.tsx";
-import SpecialistsPage from "./components/Specialists/SpecialistsPage.tsx";
+import SpecialistsPage from "./components/menuPages/SpecialistsPage/SpecialistsPage.tsx";
 import HistoryPage from "./components/menuPages/HistoryPage/HistoryPage.tsx";
 import MissionPage from "./components/menuPages/MissionPage/MissionPage.tsx";
 import ControllingAuthoritiesPage from "./components/menuPages/ControllingAuthoritiesPage/ControllingAuthoritiesPage.tsx";
@@ -67,10 +67,7 @@ const App: React.FC = () => {
             path="/informatsiya-o-strakhovykh-organizatsiyakh"
             element={<InsuranceOrganizationsPage />}
           />
-          <Route
-            path="/meditsinskiy-turizm"
-            element={<MedicalTourismPage />}
-          />
+          <Route path="/meditsinskiy-turizm" element={<MedicalTourismPage />} />
           <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/appointment" element={<AppointmentForm />} />
           <Route path="/lk" element={<LKPage />} />

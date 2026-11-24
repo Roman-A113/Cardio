@@ -1,16 +1,16 @@
 :root {
-    --color-creamy: #fff5e9;
-    --color-coal: #1e1e1e;
-    --color-sky: #96c8eb;
-    --color-coral: #f06973;
-    --color-lilac: #646eeb;
-    --color-pink: #f8c9df;
-    --color-lavender: #a69dcd;
-    
-    --color-blue: #4dd0ff;
-    --color-light-grey: #f5f5f5;
+  --color-creamy: #fff5e9;
+  --color-coal: #1e1e1e;
+  --color-sky: #96c8eb;
+  --color-coral: #f06973;
+  --color-lilac: #646eeb;
+  --color-pink: #f8c9df;
+  --color-lavender: #a69dcd;
 
-    --color-lilac-hover: #4d58ea;
-    --color-blue-hover: #22c3ff;
-    --color-coral-hover: #ed4f59;
+  --color-blue: #4dd0ff;
+  --color-light-grey: #f5f5f5;
+
+  --color-lilac-hover: #4d58ea;
+  --color-blue-hover: #22c3ff;
+  --color-coral-hover: #ed4f59;
 }
