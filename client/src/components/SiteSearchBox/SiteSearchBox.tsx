@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSiteSearch } from "../../lib/siteSearch";
+import SiteSearchHighlight from "../SiteSearchHighlight/SiteSearchHighlight";
 import "./SiteSearchBox.css";
 
 const SiteSearchBox: React.FC = () => {
@@ -116,6 +117,12 @@ const SiteSearchBox: React.FC = () => {
                       <span className="site-search__suggestion-text">
                         <strong>{result.title}</strong>
                         <small>{result.section}</small>
+                        <span className="site-search__snippet">
+                          <SiteSearchHighlight
+                            text={result.snippet}
+                            query={searchQuery}
+                          />
+                        </span>
                       </span>
                       <span
                         className="site-search__arrow"

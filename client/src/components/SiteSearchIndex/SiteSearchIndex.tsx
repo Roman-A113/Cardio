@@ -11,20 +11,8 @@ import MissionPage from "../menuPages/MissionPage/MissionPage";
 import ServicesPage from "../menuPages/ServicesPage/ServicesPage";
 import VacanciesPage from "../menuPages/VacanciesPage/VacanciesPage";
 import VisitingRulesPage from "../menuPages/VisitingRulesPage/VisitingRulesPage";
-import HeroSection from "../HeroSection/HeroSection";
-import News from "../News/News";
 
-const staticPages = [
-  {
-    path: "/",
-    title: "Главная",
-    element: (
-      <>
-        <HeroSection />
-        <News />
-      </>
-    ),
-  },
+const pagesNeedToSearch = [
   { path: "/history", title: "История", element: <HistoryPage /> },
   { path: "/missiya", title: "Миссия", element: <MissionPage /> },
   {
@@ -102,26 +90,31 @@ const SiteSearchIndex: React.FC = () => {
     );
 
     const pageDocuments = pages.map((page) => {
-        const content = readPageText(page);
+      const content = readPageText(page);
 
-        return {
-          path: page.dataset.siteSearchPath ?? "/",
-          title:
-            page.dataset.siteSearchTitle ??
-            page.querySelector("h1")?.textContent?.trim() ??
-            "Раздел",
-          section: "",
-          summary: getSummary(page, content),
-          content,
-        };
-      });
+      return {
+        path: page.dataset.siteSearchPath ?? "/",
+        title:
+          page.dataset.siteSearchTitle ??
+          page.querySelector("h1")?.textContent?.trim() ??
+          "Раздел",
+        section: "",
+        summary: getSummary(page, content),
+        content,
+      };
+    });
 
     setSiteSearchDocuments(pageDocuments);
   }, []);
 
   return (
-    <div className="site-search-index" ref={containerRef} hidden aria-hidden="true">
-      {staticPages.map((page) => (
+    <div
+      className="site-search-index"
+      ref={containerRef}
+      hidden
+      aria-hidden="true"
+    >
+      {pagesNeedToSearch.map((page) => (
         <div
           key={page.path}
           data-site-search-path={page.path}

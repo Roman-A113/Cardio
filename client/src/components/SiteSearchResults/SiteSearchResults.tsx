@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useSiteSearch } from "../../lib/siteSearch";
+import SiteSearchHighlight from "../SiteSearchHighlight/SiteSearchHighlight";
 import "./SiteSearchResults.css";
 
 const SiteSearchResults: React.FC = () => {
@@ -39,7 +40,9 @@ const SiteSearchResults: React.FC = () => {
                   {result.section}
                 </span>
                 <h2>{result.title}</h2>
-                <p>{result.summary}</p>
+                <p>
+                  <SiteSearchHighlight text={result.snippet} query={query} />
+                </p>
                 <span className="site-search-result__action">
                   Открыть раздел <span aria-hidden="true">→</span>
                 </span>

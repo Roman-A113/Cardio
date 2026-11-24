@@ -10,8 +10,8 @@ export interface SiteSearchDocument {
 
 export type SiteSearchResult = Pick<
   SiteSearchDocument,
-  "title" | "path" | "section" | "summary"
->;
+  "title" | "path" | "section"
+> & { snippet: string };
 
 let siteSearchDocuments: SiteSearchDocument[] = [];
 const subscribers = new Set<() => void>();
@@ -28,18 +28,39 @@ export const setSiteSearchDocuments = (documents: SiteSearchDocument[]) => {
   subscribers.forEach((subscriber) => subscriber());
 };
 
-const normalize = (value: string) =>
+export const normalizeSearchText = (value: string) =>
   value
     .toLocaleLowerCase("ru-RU")
     .replace(/ё/g, "е")
     .replace(/[^a-zа-я0-9]+/g, " ")
     .trim();
 
+const getSearchSnippet = (
+  content: string,
+  queryTerms: string[],
+  fallback: string,
+) => {
+  const match = Array.from(content.matchAll(/[a-zа-яё0-9]+/gi)).find(
+    ([word]) =>
+      queryTerms.some((term) => normalizeSearchText(word).includes(term)),
+  );
+
+  if (!match || match.index === undefined) {
+    return fallback;
+  }
+
+  const start = Math.max(0, match.index - 70);
+  const end = Math.min(content.length, start + 180);
+  const snippet = content.slice(start, end).trim();
+
+  return `${start > 0 ? "…" : ""}${snippet}${end < content.length ? "…" : ""}`;
+};
+
 export const searchSite = (
   query: string,
   documents = siteSearchDocuments,
 ): SiteSearchResult[] => {
-  const normalizedQuery = normalize(query);
+  const normalizedQuery = normalizeSearchText(query);
   const queryTerms = normalizedQuery.split(/\s+/).filter(Boolean);
 
   if (queryTerms.length === 0) {
@@ -48,8 +69,8 @@ export const searchSite = (
 
   return documents
     .map((document) => {
-      const title = normalize(document.title);
-      const searchableText = normalize(
+      const title = normalizeSearchText(document.title);
+      const searchableText = normalizeSearchText(
         `${document.summary} ${document.content}`,
       );
       const searchableTerms = searchableText.split(/\s+/);
@@ -77,7 +98,7 @@ export const searchSite = (
       title: document.title,
       path: document.path,
       section: document.section,
-      summary: document.summary,
+      snippet: getSearchSnippet(document.content, queryTerms, document.summary),
     }));
 };
 

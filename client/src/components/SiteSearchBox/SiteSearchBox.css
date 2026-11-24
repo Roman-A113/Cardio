@@ -126,6 +126,16 @@
   font-size: 12px;
 }
 
+.site-search__snippet {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #687180;
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .site-search__arrow {
   margin-left: auto;
   color: #a94757;
