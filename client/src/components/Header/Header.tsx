@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import SiteSearchBox from "../SiteSearchBox/SiteSearchBox";
 import "./Header.css";
 
 const Header: React.FC = () => {
@@ -47,51 +48,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className="search-section">
-          <form
-            className="search-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const input = e.currentTarget.querySelector(
-                ".search-input",
-              ) as HTMLInputElement | null;
-              if (input?.value.trim()) {
-                console.log("Поиск:", input.value.trim());
-                alert("Поиск по сайту пока в разработке");
-              }
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Поиск по сайту..."
-              className="search-input"
-            />
-            <button type="submit" className="search-btn" aria-label="Найти">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
-                  stroke="#666"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 21L16.65 16.65"
-                  stroke="#666"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </form>
-        </div>
+        <SiteSearchBox />
 
         <div className="header-right">
           <button
