@@ -4,7 +4,6 @@ export interface SiteSearchDocument {
   title: string;
   path: string;
   section: string;
-  summary: string;
   content: string;
 }
 
@@ -38,18 +37,14 @@ export const normalizeSearchText = (value: string) =>
 const getSearchSnippet = (
   content: string,
   queryTerms: string[],
-  fallback: string,
 ) => {
   const match = Array.from(content.matchAll(/[a-zа-яё0-9]+/gi)).find(
     ([word]) =>
       queryTerms.some((term) => normalizeSearchText(word).includes(term)),
   );
 
-  if (!match || match.index === undefined) {
-    return fallback;
-  }
-
-  const start = Math.max(0, match.index - 70);
+  const start =
+    match?.index === undefined ? 0 : Math.max(0, match.index - 70);
   const end = Math.min(content.length, start + 180);
   const snippet = content.slice(start, end).trim();
 
@@ -70,9 +65,7 @@ export const searchSite = (
   return documents
     .map((document) => {
       const title = normalizeSearchText(document.title);
-      const searchableText = normalizeSearchText(
-        `${document.summary} ${document.content}`,
-      );
+      const searchableText = normalizeSearchText(document.content);
       const searchableTerms = searchableText.split(/\s+/);
       const matches = queryTerms.every((term) =>
         [...title.split(/\s+/), ...searchableTerms].some((word) =>
@@ -98,7 +91,7 @@ export const searchSite = (
       title: document.title,
       path: document.path,
       section: document.section,
-      snippet: getSearchSnippet(document.content, queryTerms, document.summary),
+      snippet: getSearchSnippet(document.content, queryTerms),
     }));
 };
 

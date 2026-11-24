@@ -70,15 +70,6 @@ const readPageText = (root: HTMLElement) => {
   return textParts.join(" ");
 };
 
-const getSummary = (root: HTMLElement, content: string) => {
-  const paragraph = Array.from(root.querySelectorAll("p"))
-    .map((element) => element.textContent?.replace(/\s+/g, " ").trim() ?? "")
-    .find((text) => text.length > 40);
-
-  const summary = paragraph ?? content;
-  return summary.length > 180 ? `${summary.slice(0, 177).trimEnd()}…` : summary;
-};
-
 const SiteSearchIndex: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +90,6 @@ const SiteSearchIndex: React.FC = () => {
           page.querySelector("h1")?.textContent?.trim() ??
           "Раздел",
         section: "",
-        summary: getSummary(page, content),
         content,
       };
     });

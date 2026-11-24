@@ -21,7 +21,7 @@ const SiteSearchBox: React.FC = () => {
     navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
-  const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitSearch = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     openSearchResults();
   };
