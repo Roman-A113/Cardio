@@ -18,7 +18,8 @@
   position: relative;
 }
 
-.main-nav > ul > li > a {
+.main-nav > ul > li > a,
+.main-nav > ul > li > .nav-item__label {
   display: block;
   padding: 20px 20px;
   text-decoration: none;
@@ -33,7 +34,9 @@
 }
 
 .main-nav > ul > li > a:hover,
-.main-nav > ul > li:hover > a {
+.main-nav > ul > li > .nav-item__label:hover,
+.main-nav > ul > li:hover > a,
+.main-nav > ul > li:hover > .nav-item__label {
   color: var(--color-coral);
   border-bottom-color: var(--color-coral);
 }
@@ -58,8 +61,7 @@
   transition: all 0.3s ease;
 }
 
-.nav-item:hover .dropdown,
-.nav-item:focus-within .dropdown {
+.nav-item.is-open .dropdown {
   display: block;
   opacity: 1;
   visibility: visible;

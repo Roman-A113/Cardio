@@ -9,7 +9,7 @@ import HeroSection from "./components/HeroSection/HeroSection.tsx";
 import "./styles/variables.css";
 import AppointmentForm from "./components/AppointmentForm/AppointmentForm.tsx";
 import LKPage from "./components/LKPage/LKPage.tsx";
-import PageTemplate from "./components/PageTemplate/PageTemplate.tsx";
+import NotFoundPage from "./components/NotFoundPage/NotFoundPage.tsx";
 import SpecialistsPage from "./components/menuPages/SpecialistsPage/SpecialistsPage.tsx";
 import HistoryPage from "./components/menuPages/HistoryPage/HistoryPage.tsx";
 import MissionPage from "./components/menuPages/MissionPage/MissionPage.tsx";
@@ -71,8 +71,7 @@ const App: React.FC = () => {
           <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/appointment" element={<AppointmentForm />} />
           <Route path="/lk" element={<LKPage />} />
-          <Route path="/:slug" element={<PageTemplate />} />
-          <Route path="*" element={<PageTemplate />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

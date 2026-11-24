@@ -1,102 +1,113 @@
-export interface MenuItem {
+export interface MenuLink {
   title: string;
   path?: string;
-  links: string[];
-  paths?: Record<string, string>;
 }
 
-export const menuData: MenuItem[] = [
-  {
-    title: "Об институте",
-    path: "/ob-institute",
-    links: [
-      "История",
-      "Миссия",
-      "Официальные документы",
-      "Структура",
-      "Специалисты",
-      "Контролирующие органы",
-      "Противодействие коррупции",
-      "Профилактика терроризма",
-      "Вакансии",
-    ],
-    paths: {
-      История: "/history",
-      Миссия: "/missiya",
-      Специалисты: "/specialists",
-      "Контролирующие органы": "/kontroliruyushchie-organy",
-      Вакансии: "/vakansii",
+export interface MenuItem {
+  title: string;
+  links: MenuLink[];
+}
+
+const PATHS = {
+  specialists: "/specialists",
+  appointment: "/appointment",
+} as const;
+
+const aboutInstitute: MenuItem = {
+  title: "Об институте",
+  links: [
+    { title: "История", path: "/history" },
+    { title: "Миссия", path: "/missiya" },
+    { title: "Официальные документы" },
+    { title: "Структура" },
+    { title: "Специалисты", path: PATHS.specialists },
+    { title: "Контролирующие органы", path: "/kontroliruyushchie-organy" },
+    { title: "Противодействие коррупции" },
+    { title: "Профилактика терроризма" },
+    { title: "Вакансии", path: "/vakansii" },
+  ],
+};
+
+const forPatients: MenuItem = {
+  title: "Пациентам",
+  links: [
+    { title: "Правила записи на прием", path: "/pravila-zapisi-na-priem" },
+    { title: "Расписание специалистов" },
+    { title: "Госпитализация от А до Я", path: "/gospitalizatsiya-ot-a-do-ya" },
+    { title: "Памятки пациентам" },
+    { title: "Услуги", path: "/uslugi" },
+    { title: "Виды медицинской помощи", path: "/vidy-meditsinskoy-pomoshchi" },
+    {
+      title: "Правила и график посещения",
+      path: "/pravila-i-grafik-poseshcheniya",
     },
-  },
-  {
-    title: "Пациентам",
-    links: [
-      "Правила записи на прием",
-      "Расписание специалистов",
-      "Госпитализация от А до Я",
-      "Памятки пациентам",
-      "Услуги",
-      "Виды медицинской помощи",
-      "Правила и график посещения",
-      "Лекарственное обеспечение",
-      "Информация о страховых организациях",
-      "Политика конфиденциальности",
-      "Медицинский туризм",
-      "Специалисты",
-    ],
-    paths: {
-      "Правила записи на прием": "/pravila-zapisi-na-priem",
-      "Госпитализация от А до Я": "/gospitalizatsiya-ot-a-do-ya",
-      Услуги: "/uslugi",
-      "Виды медицинской помощи": "/vidy-meditsinskoy-pomoshchi",
-      "Правила и график посещения": "/pravila-i-grafik-poseshcheniya",
-      "Информация о страховых организациях":
-        "/informatsiya-o-strakhovykh-organizatsiyakh",
-      "Медицинский туризм": "/meditsinskiy-turizm",
-      Специалисты: "/specialists",
+    { title: "Лекарственное обеспечение" },
+    {
+      title: "Информация о страховых организациях",
+      path: "/informatsiya-o-strakhovykh-organizatsiyakh",
     },
-  },
-  {
-    title: "Платные услуги",
-    links: [
-      "Правила записи на платный прием",
-      "Запись на прием",
-      "Специалисты",
-      "Виды услуг",
-      "Прейскурант",
-      "Документы",
-      "ДМС",
-    ],
-    paths: {
-      "Запись на прием": "/appointment",
-      Специалисты: "/specialists",
-    },
-  },
-  {
-    title: "Пресс-центр",
-    links: ["Новости", "Мероприятия", "СМИ о нас", "Отзывы", "Полезные ссылки"],
-  },
-  {
-    title: "Клиника",
-    links: [
-      "ИБ 1",
-      "ИБ 2",
-      "ИБ 3",
-      "Поликлиника",
-      "АИК",
-      "Кардиохирургия",
-      "Центр женской кардиологии",
-      "Центр мужской кардиологии",
-      "Центр липидологии",
-      "Фарм исследования",
-    ],
-  },
-  {
-    title: "Контакты",
-    links: [],
-  },
-  {
-    title: "Юбилей",
-    links: ["Лонгрид про юбилей. Страница, отличающаяся от сайта"],
-  },
-];
+    { title: "Политика конфиденциальности" },
+    { title: "Медицинский туризм", path: "/meditsinskiy-turizm" },
+    { title: "Специалисты", path: PATHS.specialists },
+  ],
+};
+
+const paidServices: MenuItem = {
+  title: "Платные услуги",
+  links: [
+    { title: "Правила записи на платный прием" },
+    { title: "Запись на прием", path: PATHS.appointment },
+    { title: "Специалисты", path: PATHS.specialists },
+    { title: "Виды услуг" },
+    { title: "Прейскурант" },
+    { title: "Документы" },
+    { title: "ДМС" },
+  ],
+};
+
+const pressCenter: MenuItem = {
+  title: "Пресс-центр",
+  links: [
+    { title: "Новости" },
+    { title: "Мероприятия" },
+    { title: "СМИ о нас" },
+    { title: "Отзывы" },
+    { title: "Полезные ссылки" },
+  ],
+};
+
+const clinic: MenuItem = {
+  title: "Клиника",
+  links: [
+    { title: "ИБ 1" },
+    { title: "ИБ 2" },
+    { title: "ИБ 3" },
+    { title: "Поликлиника" },
+    { title: "АИК" },
+    { title: "Кардиохирургия" },
+    { title: "Центр женской кардиологии" },
+    { title: "Центр мужской кардиологии" },
+    { title: "Центр липидологии" },
+    { title: "Фарм исследования" },
+  ],
+};
+
+const contacts: MenuItem = {
+  title: "Контакты",
+  links: [],
+};
+
+const anniversary: MenuItem = {
+  title: "Юбилей",
+  links: [{ title: "Лонгрид про юбилей. Страница, отличающаяся от сайта" }],
+};
+
+export const menuData = [
+  aboutInstitute,
+  forPatients,
+  paidServices,
+  pressCenter,
+  clinic,
+  contacts,
+  anniversary,
+] satisfies MenuItem[];
