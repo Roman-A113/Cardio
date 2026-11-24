@@ -7,7 +7,99 @@
 
 .lk-page h2 {
   font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.lk-page h3 {
+  margin: 1.5rem 0 1rem;
+  font-size: 1.2rem;
+}
+
+.lk-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 1.5rem;
+}
+
+.lk-page__header p {
+  color: #666;
+}
+
+.lk-page__logout {
+  padding: 9px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  color: #333;
+  font: inherit;
+}
+
+.lk-page__logout:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.lk-page__error {
+  margin-bottom: 1rem;
+  color: #b42318;
+}
+
+.lk-page__profile {
+  margin-bottom: 2rem;
+  padding: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+}
+
+.lk-page__profile h3 {
+  margin: 0 0 1rem;
+}
+
+.lk-page__profile form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.lk-page__profile label {
+  display: grid;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.lk-page__profile input {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font: inherit;
+}
+
+.lk-page__profile input:focus {
+  border-color: var(--color-lilac);
+  outline: 2px solid rgb(128 94 160 / 18%);
+}
+
+.lk-page__profile button {
+  justify-self: start;
+  align-self: end;
+  min-height: 42px;
+  padding: 8px 16px;
+  border-radius: 7px;
+  background: var(--color-lilac);
+  color: #fff;
+  font: inherit;
+}
+
+.lk-page__profile button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.lk-page__success {
+  margin-top: 12px;
+  color: #18794e;
 }
 
 .lk-page table {
@@ -43,4 +135,14 @@
 
 .lk-page tr:hover {
   background: #f9f9f9;
+}
+
+@media (max-width: 600px) {
+  .lk-page__profile {
+    padding: 16px;
+  }
+
+  .lk-page__profile form {
+    grid-template-columns: 1fr;
+  }
 }

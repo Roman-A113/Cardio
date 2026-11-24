@@ -8,7 +8,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
 import type { Specialist } from "@/types/Specialist";
 import type { CreateAppointmentDto, DoctorSlot } from "@/types/Appointment";
 import "./AppointmentForm.css";
@@ -33,6 +33,7 @@ export default function AppointmentForm() {
   const [doctorsLoading, setDoctorsLoading] = useState(true);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [error, setError] = useState("");
+  const [profileError, setProfileError] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -63,6 +64,11 @@ export default function AppointmentForm() {
     birthDate: "",
     comment: "",
   });
+  const [profileDefaults, setProfileDefaults] = useState({
+    patientName: "",
+    patientPhone: "",
+    patientEmail: "",
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -90,6 +96,50 @@ export default function AppointmentForm() {
         }
       }
     })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadProfile = async () => {
+      try {
+        const { user } = await api.getCurrentUser();
+        if (cancelled) return;
+
+        const defaults = {
+          patientName: [user.lastName, user.firstName, user.middleName]
+            .filter(Boolean)
+            .join(" "),
+          patientPhone: user.phone ?? "",
+          patientEmail: user.email,
+        };
+        setProfileDefaults(defaults);
+        setForm((current) => ({
+          ...current,
+          patientName: current.patientName || defaults.patientName,
+          patientPhone: current.patientPhone || defaults.patientPhone,
+          patientEmail: current.patientEmail || defaults.patientEmail,
+        }));
+      } catch (profileLoadError) {
+        if (
+          cancelled ||
+          (profileLoadError instanceof ApiError &&
+            profileLoadError.status === 401)
+        ) {
+          return;
+        }
+        setProfileError(
+          profileLoadError instanceof Error
+            ? `Не удалось загрузить данные профиля: ${profileLoadError.message}`
+            : "Не удалось загрузить данные профиля",
+        );
+      }
+    };
+
+    void loadProfile();
     return () => {
       cancelled = true;
     };
@@ -276,9 +326,7 @@ export default function AppointmentForm() {
       await api.createAppointment(body);
       setMessage("Запись оформлена успешно!");
       setForm({
-        patientName: "",
-        patientPhone: "",
-        patientEmail: "",
+        ...profileDefaults,
         birthDate: "",
         comment: "",
       });
@@ -312,6 +360,11 @@ export default function AppointmentForm() {
     <section className="appointment-form">
       <h2>Запись на приём</h2>
       {message && <div className="appointment-message">{message}</div>}
+      {profileError && (
+        <div className="appointment-error" role="status">
+          {profileError}
+        </div>
+      )}
 
       <div className="appointment-layout">
         <div className="col-doctors">

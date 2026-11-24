@@ -1,15 +1,264 @@
-import fastify from "fastify";
+import fastify, { type FastifyReply, type FastifyRequest } from "fastify";
 import fastifyJwt from "@fastify/jwt";
+import cookie from "@fastify/cookie";
+import argon2 from "argon2";
 import "dotenv/config";
 import cors from "@fastify/cors";
 import { env, validateEnv } from "./config/env.js";
 import { prisma } from "./db/data-source.js";
 
+type UserRole = "PATIENT" | "ADMIN" | "DOCTOR";
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: { sub: string; email: string; role: UserRole };
+    user: { sub: string; email: string; role: UserRole };
+  }
+}
+
 const app = fastify({ logger: true });
+const AUTH_COOKIE_NAME = "cardio_session";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 app.get("/", async () => {
   return "Hello, World!";
 });
+
+const authenticate = async (request: FastifyRequest, reply: FastifyReply) => {
+  try {
+    await request.jwtVerify();
+  } catch {
+    return reply.code(401).send({ message: "Требуется вход в аккаунт" });
+  }
+};
+
+const setAuthCookie = async (
+  reply: FastifyReply,
+  user: { id: string; email: string; role: UserRole },
+) => {
+  const token = await reply.jwtSign(
+    { sub: user.id, email: user.email, role: user.role },
+    { expiresIn: "7d" },
+  );
+  reply.setCookie(AUTH_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+};
+
+const isEmail = (email: string) =>
+  email.length <= 254 && EMAIL_PATTERN.test(email);
+
+app.post<{ Body: AuthCredentialsBody }>(
+  "/api/auth/register",
+  async (request, reply) => {
+    const email =
+      typeof request.body?.email === "string"
+        ? request.body.email.trim().toLowerCase()
+        : "";
+    const password =
+      typeof request.body?.password === "string" ? request.body.password : "";
+
+    if (!isEmail(email)) {
+      return reply.code(400).send({ message: "Введите корректный email" });
+    }
+    if (password.length < 8) {
+      return reply
+        .code(400)
+        .send({ message: "Пароль должен содержать не менее 8 символов" });
+    }
+
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email,
+          passwordHash: await argon2.hash(password),
+        },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          firstName: true,
+          middleName: true,
+          lastName: true,
+          phone: true,
+        },
+      });
+
+      await setAuthCookie(reply, { ...user, email });
+      return reply.code(201).send({ user });
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return reply.code(409).send({
+          message: "Аккаунт с таким email уже существует",
+        });
+      }
+      throw error;
+    }
+  },
+);
+
+app.post<{ Body: AuthCredentialsBody }>(
+  "/api/auth/login",
+  async (request, reply) => {
+    const email =
+      typeof request.body?.email === "string"
+        ? request.body.email.trim().toLowerCase()
+        : "";
+    const password =
+      typeof request.body?.password === "string" ? request.body.password : "";
+
+    if (!isEmail(email) || !password) {
+      return reply.code(400).send({ message: "Введите email и пароль" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (
+      !user ||
+      !user.email ||
+      !(await argon2.verify(user.passwordHash, password))
+    ) {
+      return reply.code(401).send({ message: "Неверный email или пароль" });
+    }
+
+    await setAuthCookie(reply, { ...user, email: user.email });
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        middleName: user.middleName,
+        lastName: user.lastName,
+        phone: user.phone,
+      },
+    };
+  },
+);
+
+app.post("/api/auth/logout", async (_request, reply) => {
+  reply.clearCookie(AUTH_COOKIE_NAME, { path: "/" });
+  return { message: "Вы вышли из аккаунта" };
+});
+
+app.get(
+  "/api/auth/me",
+  { preHandler: authenticate },
+  async (request, reply) => {
+    const user = await prisma.user.findUnique({
+      where: { id: request.user.sub },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        middleName: true,
+        lastName: true,
+        phone: true,
+      },
+    });
+
+    if (!user) {
+      return reply.code(401).send({ message: "Требуется вход в аккаунт" });
+    }
+
+    return { user };
+  },
+);
+
+app.patch<{ Body: UpdateProfileBody }>(
+  "/api/auth/profile",
+  { preHandler: authenticate },
+  async (request, reply) => {
+    const body = request.body;
+    if (!body || typeof body !== "object") {
+      return reply.code(400).send({ message: "Некорректные данные профиля" });
+    }
+
+    if (
+      body.firstName === undefined &&
+      body.middleName === undefined &&
+      body.lastName === undefined &&
+      body.phone === undefined
+    ) {
+      return reply.code(400).send({ message: "Нет данных для сохранения" });
+    }
+
+    const fields = [
+      [body.firstName, 100],
+      [body.middleName, 100],
+      [body.lastName, 100],
+      [body.phone, 32],
+    ] as const;
+    if (
+      fields.some(
+        ([value, maxLength]) =>
+          value !== undefined &&
+          (typeof value !== "string" || value.trim().length > maxLength),
+      )
+    ) {
+      return reply.code(400).send({
+        message: "Проверьте ФИО и номер телефона",
+      });
+    }
+
+    const data: {
+      firstName?: string | null;
+      middleName?: string | null;
+      lastName?: string | null;
+      phone?: string | null;
+    } = {};
+    if (body.firstName !== undefined) {
+      data.firstName = body.firstName.trim() || null;
+    }
+    if (body.middleName !== undefined) {
+      data.middleName = body.middleName.trim() || null;
+    }
+    if (body.lastName !== undefined) {
+      data.lastName = body.lastName.trim() || null;
+    }
+    if (body.phone !== undefined) {
+      data.phone = body.phone.trim() || null;
+    }
+
+    try {
+      const user = await prisma.user.update({
+        where: { id: request.user.sub },
+        data,
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          firstName: true,
+          middleName: true,
+          lastName: true,
+          phone: true,
+        },
+      });
+      return { user };
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return reply.code(409).send({
+          message: "Этот номер телефона уже указан в другом аккаунте",
+        });
+      }
+      throw error;
+    }
+  },
+);
 
 type StaffType = "DOCTOR" | "NURSE" | "ALL";
 
@@ -39,7 +288,18 @@ interface AppointmentQuery {
   staffId: string;
   date?: string; // YYYY-MM-DD
   status?: string;
-  userId?: string;
+}
+
+interface AuthCredentialsBody {
+  email?: string;
+  password?: string;
+}
+
+interface UpdateProfileBody {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  phone?: string;
 }
 
 const getMedicalStaff = async (staffType: StaffType, filters: StaffFilters) => {
@@ -168,9 +428,11 @@ app.get<{ Querystring: { staffType?: string } }>(
 
 app.get<{ Querystring: AppointmentQuery }>(
   "/api/appointments",
+  { preHandler: authenticate },
   async (request, reply) => {
-    const { staffId, date, status, userId } = request.query;
+    const { staffId, date, status } = request.query;
     const where: Record<string, unknown> = {};
+    where.userId = request.user.sub;
 
     if (staffId) {
       const parsed = Number(staffId);
@@ -188,10 +450,6 @@ app.get<{ Querystring: AppointmentQuery }>(
 
     if (status) {
       where.status = status;
-    }
-
-    if (userId) {
-      where.userId = userId;
     }
 
     const appointments = await prisma.appointment.findMany({
@@ -252,6 +510,16 @@ app.get<{ Querystring: AppointmentQuery }>(
 app.post<{ Body: CreateAppointmentBody }>(
   "/api/appointments",
   async (request, reply) => {
+    let userId: string | null = null;
+    if (request.cookies[AUTH_COOKIE_NAME]) {
+      try {
+        await request.jwtVerify();
+        userId = request.user.sub;
+      } catch {
+        return reply.code(401).send({ message: "Требуется повторный вход" });
+      }
+    }
+
     const {
       staffId,
       scheduledAt,
@@ -308,7 +576,7 @@ app.post<{ Body: CreateAppointmentBody }>(
         patientPhone: patientPhone ?? "",
         patientEmail: patientEmail ?? null,
         serviceId: serviceId ?? null,
-        userId: null,
+        userId,
       },
       include: {
         staff: {
@@ -425,8 +693,13 @@ const start = async () => {
       credentials: true,
     });
 
+    await app.register(cookie);
     await app.register(fastifyJwt, {
       secret: env.JWT_SECRET,
+      cookie: {
+        cookieName: AUTH_COOKIE_NAME,
+        signed: false,
+      },
     });
 
     await app.listen({ port: env.PORT, host: env.HOST });

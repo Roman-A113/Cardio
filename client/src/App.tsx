@@ -24,6 +24,7 @@ import InsuranceOrganizationsPage from "./components/menuPages/InsuranceOrganiza
 import MedicalTourismPage from "./components/menuPages/MedicalTourismPage/MedicalTourismPage.tsx";
 import SiteSearchResults from "./components/SiteSearchResults/SiteSearchResults.tsx";
 import SiteSearchIndex from "./components/SiteSearchIndex/SiteSearchIndex.tsx";
+import AuthPage from "./components/AuthPage/AuthPage.tsx";
 
 const App: React.FC = () => {
   return (
@@ -72,6 +73,7 @@ const App: React.FC = () => {
           <Route path="/meditsinskiy-turizm" element={<MedicalTourismPage />} />
           <Route path="/specialists" element={<SpecialistsPage />} />
           <Route path="/appointment" element={<AppointmentForm />} />
+          <Route path="/auth" element={<AuthPage />} />
           <Route path="/lk" element={<LKPage />} />
           <Route path="/search" element={<SiteSearchResults />} />
           <Route path="*" element={<NotFoundPage />} />

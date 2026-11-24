@@ -1,0 +1,91 @@
+.auth-page {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+  padding: 48px 20px;
+  background: #f9f9f9;
+}
+
+.auth-card {
+  display: grid;
+  width: min(100%, 440px);
+  gap: 18px;
+  padding: 32px;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 6%);
+}
+
+.auth-card h1 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+
+.auth-card__description {
+  color: #666;
+}
+
+.auth-card__field {
+  display: grid;
+  gap: 7px;
+  font-weight: 500;
+}
+
+.auth-card__field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.auth-card__field input:focus {
+  border-color: var(--color-lilac);
+  outline: 2px solid rgb(128 94 160 / 18%);
+}
+
+.auth-card__submit {
+  min-height: 46px;
+  border-radius: 8px;
+  background: var(--color-coral);
+  color: white;
+  font: inherit;
+  font-weight: 600;
+}
+
+.auth-card__submit:hover:not(:disabled) {
+  background: var(--color-coral-hover);
+}
+
+.auth-card__submit:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.auth-card__error {
+  color: #b42318;
+}
+
+.auth-card__switch {
+  text-align: center;
+}
+
+.auth-card__switch button,
+.auth-card__home {
+  color: var(--color-lilac);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.auth-card__home {
+  justify-self: center;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 18px;
+  }
+}
