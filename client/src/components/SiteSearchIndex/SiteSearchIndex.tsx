@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import { registerSiteSearchDocuments } from "../../lib/siteSearch";
+import { setSiteSearchDocuments } from "../../lib/siteSearch";
 import AppointmentRulesPage from "../menuPages/AppointmentRulesPage/AppointmentRulesPage";
 import ControllingAuthoritiesPage from "../menuPages/ControllingAuthoritiesPage/ControllingAuthoritiesPage";
 import HistoryPage from "../menuPages/HistoryPage/HistoryPage";
@@ -12,8 +11,8 @@ import MissionPage from "../menuPages/MissionPage/MissionPage";
 import ServicesPage from "../menuPages/ServicesPage/ServicesPage";
 import VacanciesPage from "../menuPages/VacanciesPage/VacanciesPage";
 import VisitingRulesPage from "../menuPages/VisitingRulesPage/VisitingRulesPage";
+import HeroSection from "../HeroSection/HeroSection";
 import News from "../News/News";
-import PopularCategories from "../PopularCategories/PopularCategories";
 
 const staticPages = [
   {
@@ -21,7 +20,7 @@ const staticPages = [
     title: "Главная",
     element: (
       <>
-        <PopularCategories />
+        <HeroSection />
         <News />
       </>
     ),
@@ -94,7 +93,6 @@ const getSummary = (root: HTMLElement, content: string) => {
 
 const SiteSearchIndex: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { pathname } = useLocation();
 
   useLayoutEffect(() => {
     const pages = Array.from(
@@ -109,103 +107,31 @@ const SiteSearchIndex: React.FC = () => {
         return {
           path: page.dataset.siteSearchPath ?? "/",
           title:
-            page.querySelector("h1")?.textContent?.trim() ??
             page.dataset.siteSearchTitle ??
+            page.querySelector("h1")?.textContent?.trim() ??
             "Раздел",
           section: "",
           summary: getSummary(page, content),
           content,
-          menuTitles: [],
         };
       });
 
-    const headerLinks = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>(".header a[href^='/']"),
-    )
-      .map((link) => ({
-        path: link.getAttribute("href")?.split(/[?#]/, 1)[0] ?? "",
-        title: "",
-        section: "",
-        summary: "",
-        content: "",
-        menuTitles: [link.textContent?.replace(/\s+/g, " ").trim() ?? ""],
-      }))
-      .filter((link) => link.path && link.menuTitles[0]);
-
-    registerSiteSearchDocuments([...pageDocuments, ...headerLinks]);
-  }, [pathname]);
+    setSiteSearchDocuments(pageDocuments);
+  }, []);
 
   return (
     <div className="site-search-index" ref={containerRef} hidden aria-hidden="true">
-      {staticPages
-        .filter((page) => page.path !== pathname)
-        .map((page) => (
-          <div
-            key={page.path}
-            data-site-search-path={page.path}
-            data-site-search-title={page.title}
-          >
-            {page.element}
-          </div>
-        ))}
+      {staticPages.map((page) => (
+        <div
+          key={page.path}
+          data-site-search-path={page.path}
+          data-site-search-title={page.title}
+        >
+          {page.element}
+        </div>
+      ))}
     </div>
   );
-};
-
-export const SiteSearchPageCapture: React.FC = () => {
-  const { pathname } = useLocation();
-
-  useLayoutEffect(() => {
-    if (pathname === "/search") {
-      return;
-    }
-
-    const main = document.querySelector<HTMLElement>("main");
-    if (!main) {
-      return;
-    }
-
-    const capturePage = () => {
-      const content = readPageText(main);
-      if (!content) {
-        return;
-      }
-
-      const title =
-        main.querySelector("h1")?.textContent?.trim() ??
-        (pathname === "/" ? "Главная" : "");
-      registerSiteSearchDocuments([
-        {
-          path: pathname,
-          title,
-          section: "",
-          summary: getSummary(main, content),
-          content,
-          menuTitles: [],
-        },
-      ]);
-    };
-
-    let frame = 0;
-    const observer = new MutationObserver(() => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(capturePage);
-    });
-
-    capturePage();
-    observer.observe(main, {
-      childList: true,
-      characterData: true,
-      subtree: true,
-    });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-    };
-  }, [pathname]);
-
-  return null;
 };
 
 export default SiteSearchIndex;

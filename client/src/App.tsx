@@ -23,9 +23,7 @@ import VisitingRulesPage from "./components/menuPages/VisitingRulesPage/Visiting
 import InsuranceOrganizationsPage from "./components/menuPages/InsuranceOrganizationsPage/InsuranceOrganizationsPage.tsx";
 import MedicalTourismPage from "./components/menuPages/MedicalTourismPage/MedicalTourismPage.tsx";
 import SiteSearchResults from "./components/SiteSearchResults/SiteSearchResults.tsx";
-import SiteSearchIndex, {
-  SiteSearchPageCapture,
-} from "./components/SiteSearchIndex/SiteSearchIndex.tsx";
+import SiteSearchIndex from "./components/SiteSearchIndex/SiteSearchIndex.tsx";
 
 const App: React.FC = () => {
   return (
@@ -78,7 +76,6 @@ const App: React.FC = () => {
           <Route path="/search" element={<SiteSearchResults />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-        <SiteSearchPageCapture />
       </main>
       <Footer />
       <SiteSearchIndex />
