@@ -1,22 +1,35 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./PopularCategories.css";
 
 const PopularServices: React.FC = () => {
   const services = [
-    { title: "Услуга 1", icon: "👨‍⚕️" },
-    { title: "Услуга 2", icon: "👨‍⚕️" },
-    { title: "Услуга 3", icon: "👨‍⚕️" },
-    { title: "Услуга 4", icon: "👨‍⚕️" },
+    { title: "Услуги", icon: "🩺", path: "/uslugi" },
+    {
+      title: "Виды медицинской помощи",
+      icon: "🏥",
+      path: "/vidy-meditsinskoy-pomoshchi",
+    },
+    { title: "Специалисты", icon: "👨‍⚕️", path: "/specialists" },
+    {
+      title: "Правила записи на прием",
+      icon: "📅",
+      path: "/pravila-zapisi-na-priem",
+    },
   ];
 
   return (
     <div className="popular-categories">
       <div className="categories-grid">
-        {services.map((service, index) => (
-          <a href="#" key={index} className="category-card">
+        {services.map((service) => (
+          <Link
+            to={service.path}
+            key={service.path}
+            className="category-card"
+          >
             <span className="category-icon">{service.icon}</span>
             <span className="category-name">{service.title}</span>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
